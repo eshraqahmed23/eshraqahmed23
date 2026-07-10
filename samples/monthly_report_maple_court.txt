@@ -1,0 +1,56 @@
+MAPLE COURT APARTMENTS
+Monthly Owner Report — June 2026
+742 Evergreen Terrace, Springfield, IL
+
+OCCUPANCY SUMMARY
+Total units: 12
+Occupied: 11
+Vacant: 1
+Occupancy rate: 91.7%
+
+RENT ROLL
+Unit  Type     SqFt  Tenant             Market Rent  Actual Rent  Balance  Lease End
+101   2BR/1BA  850   J. Alvarez         1,250        1,200        0        2027-03-31
+102   2BR/1BA  850   M. Chen            1,250        1,250        0        2026-11-30
+103   1BR/1BA  640   VACANT             1,050        -            -        -
+104   1BR/1BA  640   T. Okafor          1,050        995          995      2026-09-30
+201   2BR/2BA  920   S. Patel           1,400        1,375        0        2027-01-31
+202   2BR/2BA  920   R. Nguyen          1,400        1,400        0        2026-08-31
+203   1BR/1BA  640   K. Johnson         1,050        1,025        0        2026-12-31
+204   1BR/1BA  640   D. Martinez        1,050        1,050        512      2027-02-28
+301   3BR/2BA  1150  The Hendersons     1,750        1,700        0        2026-07-31
+302   3BR/2BA  1150  L. Kaminski        1,750        1,750        0        2027-05-31
+303   2BR/1BA  850   A. Diallo          1,250        1,225        0        2026-10-31
+304   2BR/1BA  850   P. Ross (notice)   1,250        1,200        0        2026-07-15
+
+Note: Unit 304 tenant gave 30-day notice, moving out July 15.
+Unit 303 lease renewal signed at $1,275 effective November.
+
+FINANCIAL SUMMARY (June 2026)             Actual      Budget
+Income
+  Rental income                           14,170      14,500
+  Late fees                                  120          50
+  Laundry income                             240         250
+Total income                              14,530      14,800
+
+Expenses
+  Repairs & maintenance                    1,840       1,200
+  Landscaping                                450         450
+  Utilities (common areas)                   620         600
+  Property insurance                         710         710
+  Property taxes (escrow)                  1,580       1,580
+  Management fee (8%)                      1,162       1,184
+  Marketing / listings                       150           0
+Total expenses                             6,512       5,724
+
+Net operating income                       8,018       9,076
+
+MAINTENANCE LOG
+- Unit 201: Water heater replacement, completed 6/12, $1,150 (emergency)
+- Unit 103: Full unit turn — paint & carpet, in progress, est. $2,400
+- Common area: Parking lot pothole repair, open, routine
+- Unit 104: Garbage disposal replaced, completed 6/20, $185
+
+NOTES
+Delinquency: Units 104 and 204 carry balances; 204 on a payment plan.
+Marketing started for unit 103; two showings scheduled next week.
