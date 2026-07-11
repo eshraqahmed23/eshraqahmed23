@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact Us — Lead Capture Demo</title>
+  <style>
+    :root { color-scheme: light dark; }
+    body {
+      font-family: system-ui, sans-serif;
+      max-width: 560px;
+      margin: 3rem auto;
+      padding: 0 1rem;
+      line-height: 1.5;
+    }
+    label { display: block; margin-top: 1rem; font-weight: 600; }
+    input, textarea {
+      width: 100%;
+      padding: 0.6rem;
+      margin-top: 0.25rem;
+      border: 1px solid #999;
+      border-radius: 6px;
+      font: inherit;
+      box-sizing: border-box;
+    }
+    textarea { min-height: 120px; }
+    button {
+      margin-top: 1.5rem;
+      padding: 0.7rem 1.5rem;
+      border: none;
+      border-radius: 6px;
+      background: #1a56db;
+      color: white;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    button:disabled { opacity: 0.6; cursor: wait; }
+    pre {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background: rgba(127, 127, 127, 0.12);
+      border-radius: 6px;
+      overflow-x: auto;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <h1>Get in touch</h1>
+  <p>Tell us about your project and we'll get back to you right away.</p>
+
+  <form id="lead-form">
+    <label>Name <input name="name" required placeholder="Jane Doe" /></label>
+    <label>Email <input name="email" type="email" required placeholder="jane@example.com" /></label>
+    <label>Phone (optional) <input name="phone" placeholder="+1 555 123 4567" /></label>
+    <label>How can we help?
+      <textarea name="message" required
+        placeholder="We're looking for a 3-bedroom home in Austin under $600k, hoping to move by September..."></textarea>
+    </label>
+    <button type="submit">Send</button>
+  </form>
+
+  <pre id="result" hidden></pre>
+
+  <script>
+    const form = document.getElementById("lead-form");
+    const result = document.getElementById("result");
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const button = form.querySelector("button");
+      button.disabled = true;
+      result.hidden = false;
+      result.textContent = "Processing your inquiry...";
+      const data = Object.fromEntries(new FormData(form).entries());
+      if (!data.phone) delete data.phone;
+      data.source = "website-contact-form";
+      try {
+        const res = await fetch("/api/leads", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+        const json = await res.json();
+        result.textContent = JSON.stringify(json, null, 2);
+      } catch (err) {
+        result.textContent = "Error: " + err;
+      } finally {
+        button.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
