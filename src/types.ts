@@ -34,12 +34,13 @@ export interface CrmContact {
   crm: "hubspot" | "local";
 }
 
-/** A scheduled follow-up reminder. */
+/** A scheduled follow-up. */
 export interface FollowUpReminder {
   id: string;
   contact_id: string;
   lead_name: string;
   lead_email: string;
+  service_requested: string;
   due_at: string; // ISO timestamp
   reason: string;
   status: "pending" | "sent";

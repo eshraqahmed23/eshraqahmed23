@@ -67,7 +67,8 @@ All configuration is via environment variables (see `.env.example`):
 |---|---|---|
 | `POST` | `/api/leads` | Submit a lead (runs the full workflow) |
 | `GET` | `/api/contacts` | List contacts in the local CRM |
-| `GET` | `/api/reminders` | List scheduled/sent follow-up reminders |
+| `GET` | `/api/reminders` | List scheduled/sent follow-ups |
+| `POST` | `/api/reminders/send-now` | Send all pending follow-ups immediately (for testing) |
 | `GET` | `/api/health` | Shows which integrations are active vs dry-run |
 | `GET` | `/` | Demo lead-capture form |
 

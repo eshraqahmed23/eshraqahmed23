@@ -3,7 +3,11 @@ import path from "node:path";
 import { z } from "zod";
 import { config } from "./config.js";
 import { listContacts } from "./crm.js";
-import { listReminders, startScheduler } from "./scheduler.js";
+import {
+  deliverDueReminders,
+  listReminders,
+  startScheduler,
+} from "./scheduler.js";
 import { runLeadWorkflow } from "./workflow.js";
 
 const app = express();
@@ -51,6 +55,20 @@ app.post("/api/leads", async (req, res) => {
 // Inspection endpoints (local CRM + scheduled reminders)
 app.get("/api/contacts", (_req, res) => res.json(listContacts()));
 app.get("/api/reminders", (_req, res) => res.json(listReminders()));
+
+// Testing helper: send all pending follow-ups right now instead of waiting
+// for their scheduled time.
+app.post("/api/reminders/send-now", async (_req, res) => {
+  try {
+    const sent = await deliverDueReminders(true);
+    res.json({ sent });
+  } catch (err) {
+    res.status(500).json({
+      error: "Failed to send follow-ups",
+      detail: err instanceof Error ? err.message : String(err),
+    });
+  }
+});
 app.get("/api/health", (_req, res) =>
   res.json({
     ok: true,
