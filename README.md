@@ -56,7 +56,8 @@ All configuration is via environment variables (see `.env.example`):
 | `ANTHROPIC_API_KEY` | Claude API access for the AI step | required (or `MOCK_AI=true`) |
 | `BUSINESS_NAME`, `BUSINESS_TYPE`, `AGENT_NAME`, `AGENT_EMAIL` | Personalizes AI drafts and reminder delivery | generic defaults |
 | `HUBSPOT_ACCESS_TOKEN` | Create contacts + notes in HubSpot | local JSON CRM |
-| `SENDGRID_API_KEY`, `FROM_EMAIL` | Send real emails | dry-run (logged) |
+| `GMAIL_USER`, `GMAIL_APP_PASSWORD` | Send real emails through your Gmail | dry-run (logged) |
+| `SENDGRID_API_KEY`, `FROM_EMAIL` | Send real emails via SendGrid (alt to Gmail) | dry-run (logged) |
 | `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_FROM_NUMBER` | Send real SMS | dry-run (logged) |
 | `CLAUDE_MODEL` | Model for the AI step | `claude-opus-4-8` |
 

@@ -19,8 +19,13 @@ export const config = {
   // CRM at data/crm.json is used.
   hubspotToken: process.env.HUBSPOT_ACCESS_TOKEN ?? "",
 
-  // Email via SendGrid — leave unset for dry-run mode (messages are logged,
-  // not sent).
+  // Email via Gmail — set GMAIL_USER (your address) and GMAIL_APP_PASSWORD
+  // (a 16-char Google App Password) to send through your own Gmail account.
+  gmailUser: process.env.GMAIL_USER ?? "",
+  gmailAppPassword: process.env.GMAIL_APP_PASSWORD ?? "",
+
+  // Email via SendGrid — alternative to Gmail. Leave both unset for dry-run
+  // mode (messages are logged, not sent).
   sendgridApiKey: process.env.SENDGRID_API_KEY ?? "",
   fromEmail: process.env.FROM_EMAIL ?? "",
 

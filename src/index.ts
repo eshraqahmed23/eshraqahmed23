@@ -56,7 +56,11 @@ app.get("/api/health", (_req, res) =>
     ok: true,
     mockAi: config.mockAi,
     crm: config.hubspotToken ? "hubspot" : "local",
-    email: config.sendgridApiKey ? "sendgrid" : "dry-run",
+    email: config.gmailUser
+      ? "gmail"
+      : config.sendgridApiKey
+        ? "sendgrid"
+        : "dry-run",
     sms: config.twilioAccountSid ? "twilio" : "dry-run",
   }),
 );

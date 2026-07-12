@@ -1,5 +1,18 @@
+import nodemailer from "nodemailer";
 import { config } from "./config.js";
 import { newId, readJson, writeJson } from "./store.js";
+
+// Reuse one Gmail transport across sends (created lazily on first use).
+let gmailTransport: nodemailer.Transporter | null = null;
+function getGmailTransport(): nodemailer.Transporter {
+  if (!gmailTransport) {
+    gmailTransport = nodemailer.createTransport({
+      service: "gmail",
+      auth: { user: config.gmailUser, pass: config.gmailAppPassword },
+    });
+  }
+  return gmailTransport;
+}
 
 interface OutboxEntry {
   id: string;
@@ -18,18 +31,34 @@ function recordOutbox(entry: Omit<OutboxEntry, "id" | "at">): void {
 }
 
 /**
- * Step 4a: send the personalized email. Uses SendGrid when configured,
- * otherwise logs the message and records it in data/outbox.json (dry-run).
+ * Step 4a: send the personalized email. Prefers Gmail when configured, then
+ * SendGrid; otherwise logs the message to data/outbox.json (dry-run).
  */
 export async function sendEmail(
   to: string,
   subject: string,
   body: string,
 ): Promise<{ sent: boolean; detail: string }> {
+  // Preferred: send through the user's own Gmail account.
+  if (config.gmailUser && config.gmailAppPassword) {
+    await getGmailTransport().sendMail({
+      from: `${config.businessName} <${config.gmailUser}>`,
+      to,
+      subject,
+      text: body,
+    });
+    recordOutbox({ channel: "email", to, subject, body, sent: true });
+    return { sent: true, detail: "sent via Gmail" };
+  }
+
+  // Fallback: SendGrid, if configured.
   if (!config.sendgridApiKey || !config.fromEmail) {
     console.log(`[dry-run email] to=${to} subject="${subject}"\n${body}\n`);
     recordOutbox({ channel: "email", to, subject, body, sent: false });
-    return { sent: false, detail: "dry-run (SENDGRID_API_KEY/FROM_EMAIL not set)" };
+    return {
+      sent: false,
+      detail: "dry-run (set GMAIL_USER/GMAIL_APP_PASSWORD or SENDGRID_API_KEY/FROM_EMAIL)",
+    };
   }
 
   const res = await fetch("https://api.sendgrid.com/v3/mail/send", {
