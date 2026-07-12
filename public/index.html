@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Contact Us — Lead Capture Demo</title>
+  <title>Contact Us</title>
   <style>
     :root { color-scheme: light dark; }
     body {
@@ -36,58 +36,119 @@
       cursor: pointer;
     }
     button:disabled { opacity: 0.6; cursor: wait; }
-    pre {
+    .link-button {
+      background: none;
+      border: none;
+      color: #1a56db;
+      padding: 0;
+      margin-top: 1rem;
+      font: inherit;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+    /* Confirmation screen */
+    #thank-you { text-align: center; padding: 2rem 0; }
+    #thank-you .check {
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 1.5rem;
+      border-radius: 50%;
+      background: #16a34a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 2.5rem;
+      line-height: 1;
+    }
+    #thank-you h1 { margin: 0 0 0.75rem; }
+    #thank-you p { color: #666; margin: 0.25rem 0; }
+    #error {
       margin-top: 1.5rem;
       padding: 1rem;
-      background: rgba(127, 127, 127, 0.12);
+      background: rgba(220, 38, 38, 0.12);
       border-radius: 6px;
-      overflow-x: auto;
-      white-space: pre-wrap;
+      color: #b91c1c;
     }
   </style>
 </head>
 <body>
-  <h1>Get in touch</h1>
-  <p>Tell us about your project and we'll get back to you right away.</p>
+  <!-- The contact form -->
+  <div id="form-view">
+    <h1>Get in touch</h1>
+    <p>Tell us about your project and we'll get back to you right away.</p>
 
-  <form id="lead-form">
-    <label>Name <input name="name" required placeholder="Jane Doe" /></label>
-    <label>Email <input name="email" type="email" required placeholder="jane@example.com" /></label>
-    <label>Phone (optional) <input name="phone" placeholder="+1 555 123 4567" /></label>
-    <label>How can we help?
-      <textarea name="message" required
-        placeholder="We're looking for a 3-bedroom home in Austin under $600k, hoping to move by September..."></textarea>
-    </label>
-    <button type="submit">Send</button>
-  </form>
+    <form id="lead-form">
+      <label>Name <input name="name" required placeholder="Jane Doe" /></label>
+      <label>Email <input name="email" type="email" required placeholder="jane@example.com" /></label>
+      <label>Phone (optional) <input name="phone" placeholder="+1 555 123 4567" /></label>
+      <label>How can we help?
+        <textarea name="message" required
+          placeholder="We're looking for a 3-bedroom home in Austin under $600k, hoping to move by September..."></textarea>
+      </label>
+      <button type="submit">Send</button>
+    </form>
 
-  <pre id="result" hidden></pre>
+    <div id="error" hidden></div>
+  </div>
+
+  <!-- The "thank you, we'll be in touch" confirmation, shown after submitting -->
+  <div id="thank-you" hidden>
+    <div class="check">&#10003;</div>
+    <h1>Thank you<span id="ty-name"></span>!</h1>
+    <p>We've received your message and one of our agents will get back to you shortly.</p>
+    <p>Keep an eye on your inbox &mdash; a confirmation is on its way.</p>
+    <button type="button" class="link-button" id="another">Submit another inquiry</button>
+  </div>
 
   <script>
     const form = document.getElementById("lead-form");
-    const result = document.getElementById("result");
+    const formView = document.getElementById("form-view");
+    const thankYou = document.getElementById("thank-you");
+    const tyName = document.getElementById("ty-name");
+    const errorBox = document.getElementById("error");
+
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       const button = form.querySelector("button");
       button.disabled = true;
-      result.hidden = false;
-      result.textContent = "Processing your inquiry...";
+      button.textContent = "Sending...";
+      errorBox.hidden = true;
+
       const data = Object.fromEntries(new FormData(form).entries());
       if (!data.phone) delete data.phone;
       data.source = "website-contact-form";
+
       try {
         const res = await fetch("/api/leads", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data),
         });
-        const json = await res.json();
-        result.textContent = JSON.stringify(json, null, 2);
+        if (!res.ok) throw new Error("Request failed (" + res.status + ")");
+
+        // Personalize the thank-you with the customer's first name, then
+        // swap the form out for the confirmation screen.
+        const firstName = (data.name || "").trim().split(/\s+/)[0];
+        tyName.textContent = firstName ? ", " + firstName : "";
+        formView.hidden = true;
+        thankYou.hidden = false;
+        window.scrollTo(0, 0);
       } catch (err) {
-        result.textContent = "Error: " + err;
+        errorBox.hidden = false;
+        errorBox.textContent =
+          "Sorry, something went wrong sending your message. Please try again.";
       } finally {
         button.disabled = false;
+        button.textContent = "Send";
       }
+    });
+
+    // Let the visitor send another inquiry without reloading
+    document.getElementById("another").addEventListener("click", () => {
+      form.reset();
+      thankYou.hidden = true;
+      formView.hidden = false;
     });
   </script>
 </body>
