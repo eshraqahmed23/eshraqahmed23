@@ -1,5 +1,6 @@
 import { config } from "./config.js";
 import { sendEmail } from "./notify.js";
+import { getFollowUpTemplate, renderTemplate } from "./settings.js";
 import { newId, readJson, writeJson } from "./store.js";
 import type { CrmContact, FollowUpReminder, LeadAnalysis } from "./types.js";
 
@@ -40,27 +41,9 @@ export function listReminders(): FollowUpReminder[] {
   return readJson<FollowUpReminder[]>(REMINDERS_FILE, []);
 }
 
-/** Compose the follow-up email that gets sent to the lead. */
+/** Compose the follow-up email using the agent's editable template. */
 function followUpEmail(reminder: FollowUpReminder): { subject: string; body: string } {
-  const firstName = reminder.lead_name.trim().split(/\s+/)[0];
-  return {
-    subject: `Following up on your inquiry with ${config.businessName}`,
-    body: [
-      `Hi ${firstName},`,
-      "",
-      `I wanted to follow up on your recent inquiry with ${config.businessName}` +
-        (reminder.service_requested && reminder.service_requested !== "general inquiry"
-          ? ` about ${reminder.service_requested}.`
-          : "."),
-      "",
-      `I'd still love to help. Are you available for a quick call this week? ` +
-        `Just reply to this email and let me know what works for you.`,
-      "",
-      "Best,",
-      config.agentName,
-      config.businessName,
-    ].join("\n"),
-  };
+  return renderTemplate(getFollowUpTemplate(), reminder);
 }
 
 /**

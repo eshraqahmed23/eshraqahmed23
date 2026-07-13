@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Follow-up Email Editor</title>
+  <style>
+    :root { color-scheme: light dark; }
+    body {
+      font-family: system-ui, sans-serif;
+      max-width: 760px;
+      margin: 2.5rem auto;
+      padding: 0 1rem;
+      line-height: 1.5;
+    }
+    h1 { margin-bottom: 0.25rem; }
+    p.sub { color: #666; margin-top: 0; }
+    label { display: block; margin-top: 1.25rem; font-weight: 600; }
+    input, textarea {
+      width: 100%;
+      padding: 0.6rem;
+      margin-top: 0.35rem;
+      border: 1px solid #999;
+      border-radius: 6px;
+      font: inherit;
+      box-sizing: border-box;
+    }
+    textarea { min-height: 220px; font-family: ui-monospace, monospace; }
+    .row { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1.5rem; }
+    button {
+      padding: 0.7rem 1.4rem;
+      border: none;
+      border-radius: 6px;
+      background: #1a56db;
+      color: white;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    button.secondary { background: #6b7280; }
+    button:disabled { opacity: 0.6; cursor: wait; }
+    .placeholders {
+      margin-top: 1rem;
+      padding: 0.85rem 1rem;
+      background: rgba(127,127,127,0.12);
+      border-radius: 6px;
+      font-size: 0.9rem;
+    }
+    .placeholders code {
+      background: rgba(127,127,127,0.25);
+      padding: 0.1rem 0.35rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .placeholders code:hover { background: #1a56db; color: white; }
+    .preview {
+      margin-top: 1.5rem;
+      padding: 1rem 1.25rem;
+      border: 1px solid #999;
+      border-radius: 6px;
+    }
+    .preview .sub-line { font-weight: 600; }
+    .preview pre { white-space: pre-wrap; font-family: inherit; margin: 0.5rem 0 0; }
+    .status { margin-top: 1rem; font-weight: 600; }
+    .status.ok { color: #16a34a; }
+    .status.err { color: #b91c1c; }
+    a { color: #1a56db; }
+  </style>
+</head>
+<body>
+  <h1>Follow-up email editor</h1>
+  <p class="sub">Write the follow-up message that is automatically sent to each new lead. Changes take effect immediately — no restart needed.</p>
+
+  <div class="placeholders">
+    <strong>Placeholders</strong> (click to insert into the box your cursor is in) — these get replaced with each lead's real info:
+    <div id="placeholder-list" style="margin-top:0.5rem;"></div>
+  </div>
+
+  <label>Subject
+    <input id="subject" placeholder="Following up on your inquiry with {{business}}" />
+  </label>
+
+  <label>Message
+    <textarea id="body"></textarea>
+  </label>
+
+  <div class="row">
+    <button id="save">Save follow-up email</button>
+    <button id="reset" class="secondary" type="button">Reset to default</button>
+    <a href="/" style="align-self:center;">&larr; Back to contact form</a>
+  </div>
+
+  <div id="status" class="status" hidden></div>
+
+  <div class="preview">
+    <div style="font-weight:600; margin-bottom:0.5rem;">Live preview (example: Jamie Lee)</div>
+    <div class="sub-line" id="pv-subject"></div>
+    <pre id="pv-body"></pre>
+  </div>
+
+  <script>
+    const subjectEl = document.getElementById("subject");
+    const bodyEl = document.getElementById("body");
+    const statusEl = document.getElementById("status");
+    const phList = document.getElementById("placeholder-list");
+    let defaults = { subject: "", body: "" };
+    let lastFocused = bodyEl;
+
+    // Example lead used for the live preview
+    const sample = {
+      first_name: "Jamie",
+      name: "Jamie Lee",
+      email: "jamie@example.com",
+      service: "kitchen remodel",
+      business: "Hilltop Realty",
+      agent: "Alex Rivera",
+    };
+
+    function fill(text) {
+      return text.replace(/\{\{\s*(\w+)\s*\}\}/g, (_m, k) => sample[k] ?? "");
+    }
+    function updatePreview() {
+      document.getElementById("pv-subject").textContent = fill(subjectEl.value);
+      document.getElementById("pv-body").textContent = fill(bodyEl.value);
+    }
+
+    subjectEl.addEventListener("input", updatePreview);
+    bodyEl.addEventListener("input", updatePreview);
+    subjectEl.addEventListener("focus", () => (lastFocused = subjectEl));
+    bodyEl.addEventListener("focus", () => (lastFocused = bodyEl));
+
+    function insertToken(token) {
+      const el = lastFocused;
+      const start = el.selectionStart ?? el.value.length;
+      const end = el.selectionEnd ?? el.value.length;
+      el.value = el.value.slice(0, start) + token + el.value.slice(end);
+      el.focus();
+      el.selectionStart = el.selectionEnd = start + token.length;
+      updatePreview();
+    }
+
+    function showStatus(msg, ok) {
+      statusEl.hidden = false;
+      statusEl.textContent = msg;
+      statusEl.className = "status " + (ok ? "ok" : "err");
+    }
+
+    // Load current template + placeholders from the server
+    fetch("/api/followup-template")
+      .then((r) => r.json())
+      .then((data) => {
+        subjectEl.value = data.template.subject;
+        bodyEl.value = data.template.body;
+        defaults = data.defaults;
+        for (const p of data.placeholders) {
+          const code = document.createElement("code");
+          code.textContent = p.token;
+          code.title = p.desc;
+          code.addEventListener("click", () => insertToken(p.token));
+          phList.appendChild(code);
+          phList.appendChild(document.createTextNode(" "));
+        }
+        updatePreview();
+      });
+
+    document.getElementById("save").addEventListener("click", async () => {
+      const btn = document.getElementById("save");
+      btn.disabled = true;
+      try {
+        const res = await fetch("/api/followup-template", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ subject: subjectEl.value, body: bodyEl.value }),
+        });
+        if (!res.ok) throw new Error("Save failed");
+        showStatus("Saved! New leads will get this follow-up.", true);
+      } catch (e) {
+        showStatus("Couldn't save — make sure the subject and message aren't empty.", false);
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    document.getElementById("reset").addEventListener("click", () => {
+      subjectEl.value = defaults.subject;
+      bodyEl.value = defaults.body;
+      updatePreview();
+      showStatus("Reset to the default wording — click Save to keep it.", true);
+    });
+  </script>
+</body>
+</html>

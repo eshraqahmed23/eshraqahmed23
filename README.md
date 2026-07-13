@@ -70,7 +70,17 @@ All configuration is via environment variables (see `.env.example`):
 | `GET` | `/api/reminders` | List scheduled/sent follow-ups |
 | `POST` | `/api/reminders/send-now` | Send all pending follow-ups immediately (for testing) |
 | `GET` | `/api/health` | Shows which integrations are active vs dry-run |
+| `GET`/`POST` | `/api/followup-template` | Read / save the editable follow-up email |
 | `GET` | `/` | Demo lead-capture form |
+| `GET` | `/editor.html` | Editor page where the agent writes their follow-up email |
+
+## Editing the follow-up email
+
+Open **http://localhost:3000/editor.html** to write the follow-up message that
+gets sent to every new lead — no code required. Use placeholders like
+`{{first_name}}`, `{{service}}`, `{{business}}`, and `{{agent}}` (click them to
+insert) and they're replaced with each lead's real details. A live preview shows
+how it'll look, and changes take effect immediately (no restart).
 
 ## How the AI step works
 

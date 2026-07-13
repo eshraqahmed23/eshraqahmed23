@@ -8,6 +8,12 @@ import {
   listReminders,
   startScheduler,
 } from "./scheduler.js";
+import {
+  DEFAULT_TEMPLATE,
+  PLACEHOLDERS,
+  getFollowUpTemplate,
+  saveFollowUpTemplate,
+} from "./settings.js";
 import { runLeadWorkflow } from "./workflow.js";
 
 const app = express();
@@ -52,6 +58,31 @@ app.post("/api/leads", async (req, res) => {
   }
 });
 
+// Follow-up email template — read and edit from the editor page (/editor).
+app.get("/api/followup-template", (_req, res) => {
+  res.json({
+    template: getFollowUpTemplate(),
+    defaults: DEFAULT_TEMPLATE,
+    placeholders: PLACEHOLDERS,
+  });
+});
+
+const TemplateSchema = z.object({
+  subject: z.string().min(1),
+  body: z.string().min(1),
+});
+
+app.post("/api/followup-template", (req, res) => {
+  const parsed = TemplateSchema.safeParse(req.body);
+  if (!parsed.success) {
+    return res
+      .status(400)
+      .json({ error: "Subject and body are required", issues: parsed.error.issues });
+  }
+  saveFollowUpTemplate(parsed.data);
+  res.json({ saved: true, template: parsed.data });
+});
+
 // Inspection endpoints (local CRM + scheduled reminders)
 app.get("/api/contacts", (_req, res) => res.json(listContacts()));
 app.get("/api/reminders", (_req, res) => res.json(listReminders()));
@@ -85,6 +116,7 @@ app.get("/api/health", (_req, res) =>
 
 app.listen(config.port, () => {
   console.log(`Lead capture workflow listening on http://localhost:${config.port}`);
-  console.log(`Demo form: http://localhost:${config.port}/`);
+  console.log(`Demo form:      http://localhost:${config.port}/`);
+  console.log(`Email editor:   http://localhost:${config.port}/editor.html`);
   startScheduler();
 });
