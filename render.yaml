@@ -1,0 +1,23 @@
+# Render deployment blueprint. In Render: New + → Blueprint → pick this repo.
+# Deploys in demo mode (MOCK_AI=true, email dry-run) so no secrets are needed —
+# your friend can open the link and see the whole workflow run.
+#
+# To send real emails / use real AI later, add these as environment variables in
+# the Render dashboard (Environment tab): ANTHROPIC_API_KEY (and set MOCK_AI to
+# false), GMAIL_USER, GMAIL_APP_PASSWORD.
+services:
+  - type: web
+    name: lead-capture-followup
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: MOCK_AI
+        value: "true"
+      - key: BUSINESS_NAME
+        value: Hilltop Realty
+      - key: BUSINESS_TYPE
+        value: real estate agency
+      - key: AGENT_NAME
+        value: Alex Rivera
