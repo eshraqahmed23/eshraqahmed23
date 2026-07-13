@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Property Report Upload</title>
+<style>
+  :root {
+    --bg: #f6f5f2; --card: #ffffff; --ink: #1f2937; --muted: #6b7280;
+    --accent: #0f6b5c; --accent-soft: #e3efec; --border: #e2e0da; --error: #b3352b;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16181d; --card: #1f2229; --ink: #e8e6e1; --muted: #9aa0aa;
+      --accent: #4cc2ab; --accent-soft: #223832; --border: #33363e; --error: #e0766e;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 2rem 1rem; background: var(--bg); color: var(--ink);
+    font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  main { max-width: 640px; margin: 0 auto; }
+  h1 { font-size: 1.5rem; margin: 0 0 .25rem; }
+  .sub { color: var(--muted); margin: 0 0 1.5rem; }
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem;
+  }
+  #dropzone {
+    border: 2px dashed var(--border); border-radius: 12px; padding: 2.5rem 1rem;
+    text-align: center; cursor: pointer; transition: border-color .15s, background .15s;
+  }
+  #dropzone.drag { border-color: var(--accent); background: var(--accent-soft); }
+  #dropzone p { margin: .25rem 0; }
+  #dropzone .hint { color: var(--muted); font-size: .875rem; }
+  input[type="file"] { display: none; }
+  .row { display: flex; align-items: center; gap: .75rem; margin-top: 1rem; flex-wrap: wrap; }
+  button {
+    background: var(--accent); color: #fff; border: 0; border-radius: 8px;
+    padding: .6rem 1.4rem; font-size: 1rem; cursor: pointer;
+  }
+  button:disabled { opacity: .5; cursor: not-allowed; }
+  label.toggle { color: var(--muted); font-size: .9rem; display: flex; gap: .4rem; align-items: center; }
+  #filename { font-weight: 600; }
+  #status { margin-top: .75rem; color: var(--muted); }
+  #status.error { color: var(--error); }
+  .result h2 { font-size: 1.1rem; margin: 0 0 .5rem; }
+  .kv { display: grid; grid-template-columns: auto 1fr; gap: .2rem 1rem; font-size: .95rem; }
+  .kv dt { color: var(--muted); }
+  .kv dd { margin: 0; }
+  ul.highlights { padding-left: 1.2rem; margin: .5rem 0 0; }
+  .badge {
+    display: inline-block; padding: .1rem .6rem; border-radius: 999px;
+    background: var(--accent-soft); color: var(--accent); font-size: .8rem; font-weight: 600;
+  }
+  details { margin-top: .75rem; }
+  pre {
+    background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+    padding: .75rem; overflow-x: auto; font-size: .8rem;
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>Property Report Upload</h1>
+  <p class="sub">Upload a property report and the AI agent will extract the data and load your Power BI dashboard.</p>
+
+  <div class="card">
+    <div id="dropzone" tabindex="0" role="button" aria-label="Upload a report file">
+      <p><strong>Drop a report here</strong> or click to choose a file</p>
+      <p class="hint">PDF, Excel (.xlsx/.xls), CSV, or plain text</p>
+      <p id="filename"></p>
+    </div>
+    <input type="file" id="file" accept=".pdf,.xlsx,.xls,.csv,.txt,.md">
+    <div class="row">
+      <button id="upload" disabled>Upload report</button>
+      <label class="toggle">
+        <input type="checkbox" id="dryrun"> Preview only (don’t push to Power BI)
+      </label>
+    </div>
+    <p id="status"></p>
+  </div>
+
+  <div class="card result" id="result" hidden>
+    <h2>Report processed <span class="badge" id="pushbadge"></span></h2>
+    <dl class="kv">
+      <dt>Property</dt><dd id="r-property"></dd>
+      <dt>Period</dt><dd id="r-period"></dd>
+      <dt>Rows loaded</dt><dd id="r-rows"></dd>
+    </dl>
+    <div id="r-highlights-wrap">
+      <p style="margin:.75rem 0 0"><strong>Highlights</strong></p>
+      <ul class="highlights" id="r-highlights"></ul>
+    </div>
+    <details>
+      <summary>Full extraction JSON</summary>
+      <pre id="r-json"></pre>
+    </details>
+  </div>
+</main>
+
+<script>
+const dropzone = document.getElementById("dropzone");
+const fileInput = document.getElementById("file");
+const uploadBtn = document.getElementById("upload");
+const dryrun = document.getElementById("dryrun");
+const status = document.getElementById("status");
+const result = document.getElementById("result");
+let selected = null;
+
+function setFile(file) {
+  selected = file;
+  document.getElementById("filename").textContent = file ? file.name : "";
+  uploadBtn.disabled = !file;
+  status.textContent = "";
+  status.classList.remove("error");
+}
+
+dropzone.addEventListener("click", () => fileInput.click());
+dropzone.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fileInput.click(); }
+});
+fileInput.addEventListener("change", () => setFile(fileInput.files[0] || null));
+
+["dragenter", "dragover"].forEach((ev) =>
+  dropzone.addEventListener(ev, (e) => { e.preventDefault(); dropzone.classList.add("drag"); })
+);
+["dragleave", "drop"].forEach((ev) =>
+  dropzone.addEventListener(ev, (e) => { e.preventDefault(); dropzone.classList.remove("drag"); })
+);
+dropzone.addEventListener("drop", (e) => {
+  if (e.dataTransfer.files.length) setFile(e.dataTransfer.files[0]);
+});
+
+uploadBtn.addEventListener("click", async () => {
+  if (!selected) return;
+  uploadBtn.disabled = true;
+  result.hidden = true;
+  status.classList.remove("error");
+  status.textContent = "Extracting report with AI — this can take a minute…";
+
+  const form = new FormData();
+  form.append("file", selected);
+  try {
+    const resp = await fetch(`/reports?dry_run=${dryrun.checked}`, { method: "POST", body: form });
+    const body = await resp.json();
+    if (!resp.ok) throw new Error(body.detail || `Upload failed (${resp.status})`);
+    showResult(body);
+    status.textContent = "";
+  } catch (err) {
+    status.textContent = err.message;
+    status.classList.add("error");
+  } finally {
+    uploadBtn.disabled = !selected;
+  }
+});
+
+function showResult(r) {
+  document.getElementById("r-property").textContent = r.property_name;
+  document.getElementById("r-period").textContent = r.report_period;
+  document.getElementById("r-rows").textContent = Object.entries(r.row_counts)
+    .map(([t, n]) => `${t}: ${n}`).join("  ·  ");
+  document.getElementById("pushbadge").textContent =
+    r.pushed_to_powerbi ? "pushed to Power BI" : "preview only";
+
+  const list = document.getElementById("r-highlights");
+  list.replaceChildren();
+  for (const h of r.highlights || []) {
+    const li = document.createElement("li");
+    li.textContent = h;
+    list.appendChild(li);
+  }
+  document.getElementById("r-highlights-wrap").hidden = !(r.highlights || []).length;
+  document.getElementById("r-json").textContent = JSON.stringify(r.extraction, null, 2);
+  result.hidden = false;
+}
+</script>
+</body>
+</html>

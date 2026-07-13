@@ -65,11 +65,15 @@ python -m property_report_agent.cli reports/june_2026.pdf
 python -m property_report_agent.cli reports/*.pdf --replace
 ```
 
-### HTTP API (for property managers to submit reports)
+### Web upload page (for property managers)
 
 ```bash
 uvicorn property_report_agent.api:app --host 0.0.0.0 --port 8000
 ```
+
+Open **http://localhost:8000/** — property managers drag-and-drop (or pick) a report file, optionally tick *Preview only*, and see the extraction summary, AI highlights, and per-table row counts right in the browser.
+
+The same endpoint works programmatically:
 
 ```bash
 curl -F "file=@reports/june_2026.pdf" http://localhost:8000/reports

@@ -3,21 +3,26 @@
 Run with:
     uvicorn property_report_agent.api:app --reload
 
-POST a report file to /reports and the agent extracts it and pushes the data
-into the Power BI dataset. Pass ?dry_run=true to preview the extraction
-without pushing.
+Open http://localhost:8000/ for the upload page: property managers drop a
+report file in the browser and the agent extracts it and pushes the data into
+the Power BI dataset. The same endpoint is available programmatically as
+POST /reports (pass ?dry_run=true to preview the extraction without pushing).
 """
 
 from __future__ import annotations
 
 import logging
 from functools import lru_cache
+from pathlib import Path
 
 from fastapi import FastAPI, File, HTTPException, Query, UploadFile
+from fastapi.responses import HTMLResponse
 
 from .config import pipeline_from_env
 from .ingestion import UnsupportedReportError
 from .pipeline import ReportPipeline
+
+UPLOAD_PAGE = Path(__file__).parent / "static" / "index.html"
 
 logging.basicConfig(level=logging.INFO)
 
@@ -30,6 +35,12 @@ app = FastAPI(
 @lru_cache(maxsize=1)
 def get_pipeline() -> ReportPipeline:
     return pipeline_from_env()
+
+
+@app.get("/", response_class=HTMLResponse, include_in_schema=False)
+def upload_page() -> str:
+    """Browser upload page for property managers."""
+    return UPLOAD_PAGE.read_text(encoding="utf-8")
 
 
 @app.get("/health")
