@@ -41,6 +41,11 @@ export const config = {
     ? Number(process.env.FOLLOWUP_MINUTES)
     : null,
 
+  // A lead with the same email address won't be emailed again within this
+  // many days — prevents repeat form submissions from re-triggering the
+  // welcome + follow-up. Default 30 days; set 0 to disable de-duplication.
+  dedupeDays: process.env.DEDUPE_DAYS ? Number(process.env.DEDUPE_DAYS) : 30,
+
   // Where local state lives (local CRM, reminders, outbox)
   dataDir: process.env.DATA_DIR ?? "data",
 };

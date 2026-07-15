@@ -55,5 +55,7 @@ export interface WorkflowResult {
     email: { sent: boolean; detail: string };
     sms: { sent: boolean; detail: string };
   };
-  reminder: FollowUpReminder;
+  reminder: FollowUpReminder | null;
+  /** True when this lead was skipped because they were already contacted. */
+  duplicate: boolean;
 }

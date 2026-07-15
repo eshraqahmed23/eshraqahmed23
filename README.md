@@ -92,7 +92,11 @@ how it'll look, and changes take effect immediately (no restart).
 - `email` / `sms` — personalized first-touch messages signed by your agent
 - `follow_up.delay_hours` — recommended follow-up timing with a reason
 
-Follow-up reminders persist to `data/reminders.json` and survive restarts; a background loop checks every 30 seconds and emails the agent when one is due.
+Each lead gets **one** welcome email and **one** follow-up (sent once at the
+scheduled time, then never again). Repeat submissions from the same email
+address are ignored for `DEDUPE_DAYS` days (default 30), so a lead is never
+emailed repeatedly. Follow-ups persist to `data/reminders.json` and survive
+restarts; a background loop checks every 30 seconds and sends one when it's due.
 
 ## Project layout
 

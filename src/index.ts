@@ -45,9 +45,15 @@ app.post("/api/leads", async (req, res) => {
 
   try {
     const result = await runLeadWorkflow(parsed.data);
-    console.log(
-      `Lead processed: ${result.contact.name} [${result.analysis.lead_quality}] — follow-up at ${result.reminder.due_at}`,
-    );
+    if (result.duplicate) {
+      console.log(
+        `Lead skipped (already contacted): ${result.contact.name} <${result.lead.email}>`,
+      );
+    } else {
+      console.log(
+        `Lead processed: ${result.contact.name} [${result.analysis.lead_quality}] — follow-up at ${result.reminder?.due_at}`,
+      );
+    }
     return res.status(201).json(result);
   } catch (err) {
     console.error("Workflow failed:", err);

@@ -1,5 +1,7 @@
 import { analyzeLead } from "./ai.js";
+import { config } from "./config.js";
 import { createContact } from "./crm.js";
+import { alreadyContacted, markContacted } from "./dedupe.js";
 import { sendEmail, sendSms } from "./notify.js";
 import { scheduleFollowUp } from "./scheduler.js";
 import type { LeadSubmission, WorkflowResult } from "./types.js";
@@ -22,6 +24,23 @@ export async function runLeadWorkflow(
   // 3. CRM contact (HubSpot or local)
   const contact = await createContact(lead, analysis);
 
+  // De-dupe: if this email was already contacted recently, don't email again.
+  // This guarantees a lead can't be spammed by repeat form submissions.
+  if (alreadyContacted(lead.email)) {
+    const skipped = {
+      sent: false,
+      detail: `skipped — already contacted within the last ${config.dedupeDays} days`,
+    };
+    return {
+      lead,
+      analysis,
+      contact,
+      outreach: { email: skipped, sms: skipped },
+      reminder: null,
+      duplicate: true,
+    };
+  }
+
   // 4. Personalized outreach — email always; SMS only when we have a phone number
   const email = await sendEmail(
     lead.email,
@@ -32,8 +51,11 @@ export async function runLeadWorkflow(
     ? await sendSms(lead.phone, analysis.sms)
     : { sent: false, detail: "skipped (no phone number provided)" };
 
-  // 5. Follow-up reminder for the agent
+  // Record that this lead has now been contacted (drives the de-dupe above).
+  markContacted(lead.email);
+
+  // 5. Schedule the one-time follow-up for this lead
   const reminder = scheduleFollowUp(contact, analysis);
 
-  return { lead, analysis, contact, outreach: { email, sms }, reminder };
+  return { lead, analysis, contact, outreach: { email, sms }, reminder, duplicate: false };
 }
