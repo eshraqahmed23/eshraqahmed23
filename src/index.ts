@@ -91,6 +91,32 @@ app.post("/api/followup-template", (req, res) => {
 
 // Inspection endpoints (local CRM + scheduled reminders)
 app.get("/api/contacts", (_req, res) => res.json(listContacts()));
+
+// Download all leads as a spreadsheet (CSV) — opens in Excel / Google Sheets.
+app.get("/api/leads.csv", (_req, res) => {
+  const rows = listContacts();
+  const header = [
+    "created_at",
+    "name",
+    "email",
+    "phone",
+    "source",
+    "lead_quality",
+    "summary",
+  ];
+  const esc = (v: unknown) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+  const csv = [
+    header.join(","),
+    ...rows.map((c) =>
+      [c.created_at, c.name, c.email, c.phone, c.source, c.lead_quality, c.summary]
+        .map(esc)
+        .join(","),
+    ),
+  ].join("\n");
+  res.setHeader("Content-Type", "text/csv");
+  res.setHeader("Content-Disposition", "attachment; filename=leads.csv");
+  res.send(csv);
+});
 app.get("/api/reminders", (_req, res) => res.json(listReminders()));
 
 // Testing helper: send all pending follow-ups right now instead of waiting
@@ -124,5 +150,6 @@ app.listen(config.port, () => {
   console.log(`Lead capture workflow listening on http://localhost:${config.port}`);
   console.log(`Demo form:      http://localhost:${config.port}/`);
   console.log(`Email editor:   http://localhost:${config.port}/editor.html`);
+  console.log(`Leads (CSV):    http://localhost:${config.port}/api/leads.csv`);
   startScheduler();
 });

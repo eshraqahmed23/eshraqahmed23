@@ -46,6 +46,10 @@ export const config = {
   // welcome + follow-up. Default 30 days; set 0 to disable de-duplication.
   dedupeDays: process.env.DEDUPE_DAYS ? Number(process.env.DEDUPE_DAYS) : 30,
 
+  // Optional: a Google Sheets webhook URL (from a Google Apps Script web app).
+  // When set, every lead is appended as a row to your Google Sheet in real time.
+  sheetsWebhookUrl: process.env.SHEETS_WEBHOOK_URL ?? "",
+
   // Where local state lives (local CRM, reminders, outbox)
   dataDir: process.env.DATA_DIR ?? "data",
 };

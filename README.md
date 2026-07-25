@@ -70,9 +70,38 @@ All configuration is via environment variables (see `.env.example`):
 | `GET` | `/api/reminders` | List scheduled/sent follow-ups |
 | `POST` | `/api/reminders/send-now` | Send all pending follow-ups immediately (for testing) |
 | `GET` | `/api/health` | Shows which integrations are active vs dry-run |
+| `GET` | `/api/leads.csv` | Download all leads as a spreadsheet (Excel / Google Sheets) |
 | `GET`/`POST` | `/api/followup-template` | Read / save the editable follow-up email |
 | `GET` | `/` | Demo lead-capture form |
 | `GET` | `/editor.html` | Editor page where the agent writes their follow-up email |
+
+## Leads in a spreadsheet
+
+Two ways to get your leads into a spreadsheet:
+
+**1. Download (no setup).** Open **`/api/leads.csv`** any time to download all leads
+as a CSV — double-click to open it in Excel or import into Google Sheets.
+
+**2. Live Google Sheet (real-time).** Every new lead appears as a row in a Google
+Sheet automatically. One-time setup:
+
+1. Create a new Google Sheet.
+2. In it, go to **Extensions → Apps Script**, delete anything there, and paste:
+   ```js
+   function doPost(e) {
+     const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+     const d = JSON.parse(e.postData.contents);
+     sheet.appendRow([d.timestamp, d.name, d.email, d.phone, d.source,
+                      d.lead_quality, d.service, d.summary, d.status]);
+     return ContentService.createTextOutput("ok");
+   }
+   ```
+3. Click **Deploy → New deployment → Web app**. Set **Execute as: Me** and
+   **Who has access: Anyone**, then **Deploy** and copy the web-app URL.
+4. Set that URL as the `SHEETS_WEBHOOK_URL` environment variable (in `.env` or in
+   Render's Environment tab) and restart.
+
+Now every lead is logged to your Google Sheet in real time — share it with your team.
 
 ## Editing the follow-up email
 

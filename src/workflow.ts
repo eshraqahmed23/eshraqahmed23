@@ -4,6 +4,7 @@ import { createContact } from "./crm.js";
 import { alreadyContacted, markContacted } from "./dedupe.js";
 import { sendEmail, sendSms } from "./notify.js";
 import { scheduleFollowUp } from "./scheduler.js";
+import { appendLeadToSheet } from "./sheets.js";
 import type { LeadSubmission, WorkflowResult } from "./types.js";
 
 /**
@@ -31,6 +32,7 @@ export async function runLeadWorkflow(
       sent: false,
       detail: `skipped — already contacted within the last ${config.dedupeDays} days`,
     };
+    await appendLeadToSheet(lead, analysis, "duplicate");
     return {
       lead,
       analysis,
@@ -56,6 +58,9 @@ export async function runLeadWorkflow(
 
   // 5. Schedule the one-time follow-up for this lead
   const reminder = scheduleFollowUp(contact, analysis);
+
+  // Log the new lead as a row in the Google Sheet (if configured)
+  await appendLeadToSheet(lead, analysis, "new");
 
   return { lead, analysis, contact, outreach: { email, sms }, reminder, duplicate: false };
 }
