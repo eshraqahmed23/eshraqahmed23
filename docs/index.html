@@ -1,0 +1,657 @@
+<title>Northline Heating &amp; Air</title>
+<meta name="description" content="HVAC company site with a free-estimate sign-up form, automated confirmation, and a 7-day follow-up tracker.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#F2F5F8; --surface:#FFFFFF; --surface-2:#EDF1F5; --surface-3:#E3E9F0;
+  --ink:#0E2233; --ink-soft:#42586C; --muted:#7C90A3; --line:#DDE5ED;
+  --brand:#0E6BA8; --brand-ink:#0A5488; --brand-deep:#0C2E44; --brand-soft:#E1EFF8;
+  --ember:#EE6A1E; --ember-ink:#D5570E; --ember-soft:#FCE9DC;
+  --good:#0F9D63; --good-bg:#E1F4EB; --warn:#B87500; --warn-bg:#FAEDD3;
+  --bad:#D4433A; --bad-bg:#FBE7E5; --info:#2E5F9E; --info-bg:#E6EEFA;
+  --shadow:0 1px 2px rgba(12,46,68,.06), 0 10px 26px -14px rgba(12,46,68,.22);
+  --shadow-lg:0 28px 64px -26px rgba(12,46,68,.4);
+  --r:14px; --r-sm:9px;
+  --sans:"Inter",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  --disp:"Archivo",var(--sans);
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0A1520; --surface:#12212F; --surface-2:#182B3D; --surface-3:#213548;
+    --ink:#E7F0F8; --ink-soft:#A5B8CB; --muted:#6A7F94; --line:#24384C;
+    --brand:#3E9BD6; --brand-ink:#5BAEE3; --brand-deep:#0A1E2E; --brand-soft:#10293B;
+    --ember:#F58445; --ember-ink:#FF9A63; --ember-soft:#33200F;
+    --good:#33C98E; --good-bg:#0E2D21; --warn:#E4A73C; --warn-bg:#322611;
+    --bad:#F0655B; --bad-bg:#331A18; --info:#6EA0EA; --info-bg:#132741;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 32px -16px rgba(0,0,0,.6);
+    --shadow-lg:0 34px 72px -30px rgba(0,0,0,.72);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0A1520; --surface:#12212F; --surface-2:#182B3D; --surface-3:#213548;
+  --ink:#E7F0F8; --ink-soft:#A5B8CB; --muted:#6A7F94; --line:#24384C;
+  --brand:#3E9BD6; --brand-ink:#5BAEE3; --brand-deep:#0A1E2E; --brand-soft:#10293B;
+  --ember:#F58445; --ember-ink:#FF9A63; --ember-soft:#33200F;
+  --good:#33C98E; --good-bg:#0E2D21; --warn:#E4A73C; --warn-bg:#322611;
+  --bad:#F0655B; --bad-bg:#331A18; --info:#6EA0EA; --info-bg:#132741;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 32px -16px rgba(0,0,0,.6);
+  --shadow-lg:0 34px 72px -30px rgba(0,0,0,.72);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:var(--disp);margin:0;line-height:1.06;text-wrap:balance;letter-spacing:-.02em}
+button{font-family:inherit;cursor:pointer}
+a{color:inherit}
+.mono{font-family:var(--mono)}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+
+/* ---- top bar ---- */
+.topbar{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:14px;
+  padding:11px clamp(14px,4vw,40px);background:color-mix(in srgb,var(--bg) 84%,transparent);
+  backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:11px;font-family:var(--disp);font-weight:800;font-size:18px;letter-spacing:-.02em;line-height:1}
+.brand small{display:block;font-family:var(--mono);font-weight:500;font-size:9.5px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;margin-top:3px}
+.logomark{width:34px;height:34px;border-radius:9px;background:linear-gradient(150deg,var(--brand),var(--brand-deep));position:relative;flex:0 0 auto;display:grid;place-items:center;box-shadow:0 6px 16px -6px var(--brand)}
+.logomark svg{width:20px;height:20px;color:#fff}
+.logomark::after{content:"";position:absolute;right:-3px;bottom:-3px;width:13px;height:13px;border-radius:99px;background:var(--ember);border:2px solid var(--surface)}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.phone{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:14.5px;color:var(--ink);text-decoration:none;padding:8px 12px;border-radius:9px}
+.phone svg{color:var(--ember)}
+.phone:hover{background:var(--surface-2)}
+.phone small{display:block;font-weight:500;font-size:10px;color:var(--muted)}
+.seg{display:inline-flex;background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:3px}
+.seg button{border:0;background:transparent;color:var(--ink-soft);font-weight:600;font-size:13px;padding:7px 14px;border-radius:999px;display:inline-flex;align-items:center;gap:7px;transition:.15s}
+.seg button[aria-selected="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+.seg .count{font-family:var(--mono);font-size:11px;background:var(--ember);color:#fff;border-radius:99px;padding:1px 6px;line-height:1.5}
+.iconbtn{width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink-soft);display:grid;place-items:center;font-size:16px}
+.iconbtn:hover{color:var(--ink);border-color:var(--muted)}
+
+[hidden]{display:none!important}
+.btn{border:0;border-radius:var(--r-sm);font-weight:700;font-size:15px;padding:13px 18px;display:inline-flex;align-items:center;justify-content:center;gap:9px;transition:.15s;white-space:nowrap}
+.btn-primary{background:var(--ember);color:#fff;box-shadow:0 8px 20px -8px var(--ember)}
+.btn-primary:hover{background:var(--ember-ink)}
+.btn-blue{background:var(--brand);color:#fff;box-shadow:0 8px 20px -8px var(--brand)}
+.btn-blue:hover{background:var(--brand-ink)}
+.btn-ghost{background:var(--surface-2);color:var(--ink);border:1px solid var(--line)}
+.btn-ghost:hover{border-color:var(--muted)}
+.btn-block{width:100%}
+
+/* ================= LANDING ================= */
+.hero{position:relative;background:
+   radial-gradient(1200px 500px at 80% -10%, color-mix(in srgb,var(--brand-soft) 70%,transparent), transparent 60%),
+   linear-gradient(180deg, var(--brand-deep), color-mix(in srgb,var(--brand-deep) 88%, #000));
+  color:#EAF3FA;overflow:hidden}
+.hero .wrap{max-width:1180px;margin:0 auto;padding:clamp(34px,5vw,64px) clamp(16px,4vw,40px) clamp(40px,5vw,72px);
+  display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(28px,5vw,56px);align-items:center}
+.hero .eyebrow{color:#8FC4E6}
+.hero-copy .eyebrow{display:inline-flex;align-items:center;gap:9px;margin-bottom:18px}
+.hero-copy .pulse{width:8px;height:8px;border-radius:99px;background:#37D08A;box-shadow:0 0 0 0 #37D08A;animation:pulse 2.4s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(55,208,138,.5)}70%{box-shadow:0 0 0 9px transparent}100%{box-shadow:0 0 0 0 transparent}}
+.hero h1{color:#fff;font-size:clamp(36px,5.4vw,60px);font-weight:900;letter-spacing:-.035em;line-height:1.02}
+.hero h1 .hot{color:var(--ember)}
+.hero .lede{font-size:clamp(16px,1.6vw,19px);color:#C4DBEC;max-width:48ch;margin:18px 0 26px}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.hero-cta .callnow{color:#fff;text-decoration:none;font-weight:700;display:inline-flex;align-items:center;gap:9px;padding:12px 6px}
+.hero-cta .callnow svg{color:var(--ember)}
+.badges{display:flex;flex-wrap:wrap;gap:9px 20px;margin-top:26px;font-size:13.5px;color:#B7D2E6}
+.badges span{display:inline-flex;align-items:center;gap:8px}
+.badges svg{color:#37D08A;flex:0 0 auto}
+
+/* form card */
+.formcard{background:var(--surface);color:var(--ink);border-radius:var(--r);box-shadow:var(--shadow-lg);overflow:hidden;border:1px solid rgba(255,255,255,.12)}
+.formcard .head{padding:20px 24px 16px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,var(--ember-soft),var(--surface))}
+.formcard .head h3{font-size:21px;font-weight:800}
+.formcard .head p{margin:5px 0 0;font-size:13.5px;color:var(--ink-soft)}
+.formcard .head .free{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ember-ink);background:var(--surface);border:1px solid var(--ember);border-radius:99px;padding:3px 9px;margin-bottom:10px}
+.formbody{padding:18px 24px 22px;display:grid;gap:13px}
+.field{display:grid;gap:5px}
+.field label{font-size:12.5px;font-weight:600;color:var(--ink-soft)}
+.field .req{color:var(--ember)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+input,select,textarea{font-family:inherit;font-size:14.5px;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r-sm);padding:11px 13px;width:100%;transition:.15s}
+textarea{resize:vertical;min-height:66px}
+input::placeholder,textarea::placeholder{color:var(--muted)}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--brand);background:var(--surface);box-shadow:0 0 0 3px var(--brand-soft)}
+.fineprint{font-size:11.5px;color:var(--muted);text-align:center;margin-top:2px;display:flex;align-items:center;justify-content:center;gap:6px}
+.formsuccess{padding:30px 26px 34px;text-align:center;display:grid;gap:12px;place-items:center}
+.formsuccess .check{width:56px;height:56px;border-radius:99px;background:var(--good-bg);color:var(--good);display:grid;place-items:center;font-size:28px}
+.formsuccess h3{font-size:23px}
+.formsuccess p{color:var(--ink-soft);font-size:14px;max-width:36ch;margin:0}
+.mailprev{width:100%;text-align:left;border:1px solid var(--line);border-radius:11px;overflow:hidden;margin-top:6px}
+.mailprev .mh{background:var(--surface-2);padding:10px 14px;font-size:12px;color:var(--ink-soft);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px}
+.mailprev .mh .dot{width:8px;height:8px;border-radius:99px;background:var(--good)}
+.mailprev .mb{padding:14px;font-size:13px;color:var(--ink);line-height:1.6}
+.mailprev .mb .subj{font-weight:700;margin-bottom:6px}
+.mailprev .mb .auto{margin-top:10px;font-size:11.5px;color:var(--muted);border-top:1px dashed var(--line);padding-top:9px}
+
+.section{max-width:1180px;margin:0 auto;padding:clamp(44px,6vw,80px) clamp(16px,4vw,40px)}
+.section-head{text-align:center;max-width:640px;margin:0 auto clamp(28px,4vw,44px)}
+.section-head .eyebrow{display:block;margin-bottom:12px}
+.section-head h2{font-size:clamp(26px,3.4vw,40px);font-weight:800;letter-spacing:-.03em}
+.section-head p{color:var(--ink-soft);font-size:16px;margin:12px 0 0}
+
+.services{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.svc{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:22px 20px 24px;box-shadow:var(--shadow);transition:.18s}
+.svc:hover{transform:translateY(-3px);border-color:color-mix(in srgb,var(--brand) 40%,var(--line))}
+.svc .ic{width:46px;height:46px;border-radius:12px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;margin-bottom:15px}
+.svc.hot .ic{background:var(--ember-soft);color:var(--ember-ink)}
+.svc h3{font-size:17px;font-weight:700;margin-bottom:7px}
+.svc p{margin:0;font-size:13.5px;color:var(--ink-soft)}
+.svc .from{margin-top:14px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+.svc .from b{color:var(--ink);font-size:14px}
+
+.band{background:var(--brand-deep);color:#DCEAF4}
+.band .wrap{max-width:1180px;margin:0 auto;padding:clamp(30px,4vw,52px) clamp(16px,4vw,40px);display:grid;grid-template-columns:repeat(4,1fr);gap:24px;text-align:center}
+.stat .n{font-family:var(--disp);font-weight:900;font-size:clamp(30px,4vw,44px);color:#fff;letter-spacing:-.03em;line-height:1}
+.stat .n .u{color:var(--ember)}
+.stat .l{font-size:13px;color:#9FBFD6;margin-top:8px}
+
+.how{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.step{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:24px 22px;position:relative;box-shadow:var(--shadow)}
+.step .n{font-family:var(--mono);font-size:12px;font-weight:600;color:#fff;background:var(--brand);border-radius:99px;width:30px;height:30px;display:grid;place-items:center;margin-bottom:15px}
+.step.mail .n{background:var(--ember)}
+.step h3{font-size:17px;font-weight:700;margin-bottom:7px}
+.step p{margin:0;font-size:14px;color:var(--ink-soft)}
+.step .arrow{position:absolute;right:-13px;top:36px;color:var(--line);z-index:2}
+.step:last-child .arrow{display:none}
+
+.reviews{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.review{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:22px;box-shadow:var(--shadow)}
+.review .stars{color:var(--ember);letter-spacing:2px;font-size:14px}
+.review p{font-size:14px;color:var(--ink);margin:12px 0 14px;line-height:1.6}
+.review .who{font-size:13px;color:var(--muted)}
+.review .who b{color:var(--ink);display:block;font-size:13.5px}
+
+.cta-final{background:linear-gradient(150deg,var(--brand),var(--brand-deep));color:#fff;border-radius:20px;text-align:center;padding:clamp(34px,5vw,60px) 24px;box-shadow:var(--shadow-lg)}
+.cta-final h2{color:#fff;font-size:clamp(26px,3.4vw,38px);font-weight:900}
+.cta-final p{color:#C4DBEC;max-width:44ch;margin:12px auto 22px;font-size:16px}
+.cta-final .row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.cta-final .callnow{color:#fff;text-decoration:none;font-weight:700;display:inline-flex;align-items:center;gap:9px;padding:13px 18px;border:1px solid rgba(255,255,255,.35);border-radius:9px}
+
+.foot{max-width:1180px;margin:0 auto;padding:36px clamp(16px,4vw,40px) 60px;display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;border-top:1px solid var(--line);color:var(--ink-soft);font-size:13.5px}
+.foot .brand{color:var(--ink);margin-bottom:10px}
+.foot b{color:var(--ink)}
+.storenote{text-align:center;font-size:11.5px;color:var(--muted);padding:0 20px 30px}
+
+/* ================= DASHBOARD ================= */
+main.dash{max-width:1180px;margin:0 auto;padding:clamp(20px,4vw,44px) clamp(16px,4vw,40px) 72px}
+.dash-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:22px}
+.dash-head h2{font-size:clamp(24px,3vw,32px);font-weight:800;letter-spacing:-.03em}
+.dash-head p{margin:6px 0 0;color:var(--ink-soft);font-size:14px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;box-shadow:var(--shadow)}
+.kpi .lbl{font-size:12px;color:var(--muted);font-weight:600;display:flex;align-items:center;gap:7px}
+.kpi .lbl .dot{width:8px;height:8px;border-radius:99px}
+.kpi .val{font-family:var(--disp);font-weight:900;font-size:34px;letter-spacing:-.03em;margin-top:6px;font-variant-numeric:tabular-nums}
+.kpi .sub{font-size:12px;color:var(--ink-soft);margin-top:2px}
+.kpi.attn{border-color:color-mix(in srgb,var(--warn) 45%,var(--line))}
+.kpi.attn .val{color:var(--warn)}
+.toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.chips{display:inline-flex;gap:7px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--surface);color:var(--ink-soft);font-size:13px;font-weight:600;padding:7px 13px;border-radius:999px;display:inline-flex;align-items:center;gap:7px;transition:.15s}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip .c{font-family:var(--mono);font-size:11px;opacity:.7}
+.toolbar .spacer{margin-left:auto}
+.linkbtn{background:none;border:0;color:var(--muted);font-size:12.5px;text-decoration:underline;text-underline-offset:2px;padding:6px}
+.linkbtn:hover{color:var(--bad)}
+.tablewrap{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}
+.tscroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:820px}
+thead th{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600;text-align:left;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+tbody td{padding:13px 16px;border-bottom:1px solid var(--line);font-size:14px;vertical-align:middle}
+tbody tr{cursor:pointer;transition:background .12s}
+tbody tr:hover{background:var(--surface-2)}
+tbody tr:last-child td{border-bottom:0}
+.lead-name{font-weight:600;display:flex;align-items:center;gap:9px}
+.avatar{width:30px;height:30px;border-radius:8px;background:var(--surface-3);color:var(--ink-soft);display:grid;place-items:center;font-size:12px;font-weight:700;font-family:var(--mono);flex:0 0 auto}
+.lead-sub{font-size:12px;color:var(--muted);font-weight:400}
+.tag-ex{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;background:var(--surface-3);color:var(--muted);padding:2px 6px;border-radius:5px;text-transform:uppercase;vertical-align:middle}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px;white-space:nowrap}
+.pill .d{width:7px;height:7px;border-radius:99px;background:currentColor}
+.pill.new{color:var(--info);background:var(--info-bg)}
+.pill.contacted{color:var(--brand-ink);background:var(--brand-soft)}
+.pill.scheduled{color:var(--warn);background:var(--warn-bg)}
+.pill.won{color:var(--good);background:var(--good-bg)}
+.pill.lost{color:var(--muted);background:var(--surface-2)}
+.urg{font-size:11.5px;font-weight:600;padding:3px 8px;border-radius:6px;white-space:nowrap}
+.urg.emergency{color:var(--bad);background:var(--bad-bg)}
+.urg.soon{color:var(--warn);background:var(--warn-bg)}
+.urg.flex{color:var(--ink-soft);background:var(--surface-2)}
+.auto{display:grid;gap:3px;font-size:11.5px;font-family:var(--mono)}
+.auto .a{display:inline-flex;align-items:center;gap:5px;color:var(--muted)}
+.auto .a.done{color:var(--good)}
+.auto .a.due{color:var(--warn)}
+.auto .a.over{color:var(--bad)}
+.due{font-size:13px;font-family:var(--mono);color:var(--ink-soft);white-space:nowrap}
+.due.today{color:var(--warn);font-weight:600}
+.due.over{color:var(--bad);font-weight:600}
+.rowbtn{border:1px solid var(--line);background:var(--surface);color:var(--ink-soft);border-radius:8px;padding:6px 11px;font-size:12.5px;font-weight:600}
+.rowbtn:hover{border-color:var(--ember);color:var(--ember)}
+.empty{padding:56px 24px;text-align:center;color:var(--muted)}
+.empty h3{font-size:18px;color:var(--ink);margin-bottom:6px}
+
+/* drawer */
+.scrim{position:fixed;inset:0;background:rgba(8,16,26,.46);opacity:0;pointer-events:none;transition:.2s;z-index:60;backdrop-filter:blur(2px)}
+.scrim.open{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;height:100%;width:min(460px,94vw);background:var(--surface);border-left:1px solid var(--line);box-shadow:var(--shadow-lg);transform:translateX(100%);transition:transform .24s cubic-bezier(.4,0,.2,1);z-index:70;display:flex;flex-direction:column}
+.drawer.open{transform:none}
+.drawer .dh{padding:20px 22px;border-bottom:1px solid var(--line);display:flex;gap:14px;align-items:flex-start}
+.drawer .dh .avatar{width:44px;height:44px;border-radius:11px;font-size:15px}
+.drawer .dh h3{font-size:19px;font-weight:700}
+.drawer .dh .meta{font-size:13px;color:var(--ink-soft);margin-top:3px;display:grid;gap:2px}
+.drawer .dh .meta a{color:var(--brand);text-decoration:none}
+.drawer .dh .meta a:hover{text-decoration:underline}
+.drawer .close{margin-left:auto;background:none;border:0;color:var(--muted);font-size:22px;line-height:1;padding:2px 6px}
+.drawer .close:hover{color:var(--ink)}
+.dbody{padding:20px 22px;overflow-y:auto;flex:1;display:grid;gap:20px;align-content:start}
+.sect .st{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:10px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:13.5px}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0;color:var(--ink);text-align:right}
+.autobox{border:1px solid var(--line);border-radius:11px;overflow:hidden}
+.autobox .arow{display:flex;align-items:center;gap:10px;padding:11px 14px;font-size:13px;border-bottom:1px solid var(--line)}
+.autobox .arow:last-child{border-bottom:0}
+.autobox .arow .ai{width:26px;height:26px;border-radius:7px;display:grid;place-items:center;flex:0 0 auto;background:var(--surface-2);color:var(--muted)}
+.autobox .arow.done .ai{background:var(--good-bg);color:var(--good)}
+.autobox .arow.due .ai{background:var(--warn-bg);color:var(--warn)}
+.autobox .arow .at{flex:1}
+.autobox .arow .at b{display:block;font-weight:600}
+.autobox .arow .at span{font-size:11.5px;color:var(--muted);font-family:var(--mono)}
+.stage-row{display:flex;gap:7px;flex-wrap:wrap}
+.stage-opt{border:1px solid var(--line);background:var(--surface-2);border-radius:8px;padding:7px 11px;font-size:12.5px;font-weight:600;color:var(--ink-soft)}
+.stage-opt[aria-pressed="true"]{color:#fff;border-color:transparent}
+.stage-opt.new[aria-pressed="true"]{background:var(--info)}
+.stage-opt.contacted[aria-pressed="true"]{background:var(--brand)}
+.stage-opt.scheduled[aria-pressed="true"]{background:var(--warn)}
+.stage-opt.won[aria-pressed="true"]{background:var(--good)}
+.stage-opt.lost[aria-pressed="true"]{background:var(--muted)}
+.msgbox{font-size:13.5px;color:var(--ink-soft);background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-style:italic}
+.noteform{display:grid;gap:9px}
+.timeline{display:grid;gap:0}
+.tl{display:grid;grid-template-columns:auto 1fr;gap:12px;padding-bottom:16px}
+.tl:last-child{padding-bottom:0}
+.tl .dotwrap{display:flex;flex-direction:column;align-items:center}
+.tl .tdot{width:11px;height:11px;border-radius:99px;background:var(--brand);margin-top:4px;flex:0 0 auto;box-shadow:0 0 0 3px var(--brand-soft)}
+.tl .tline{width:2px;flex:1;background:var(--line);margin:4px 0 -16px}
+.tl:last-child .tline{display:none}
+.tl .tc .tt{font-size:13.5px;color:var(--ink)}
+.tl .tc .tm{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:2px}
+.dfoot{padding:16px 22px;border-top:1px solid var(--line);display:flex;gap:10px;align-items:center}
+.dfoot .del{margin-left:auto;background:none;border:0;color:var(--muted);font-size:12.5px;display:inline-flex;align-items:center;gap:6px}
+.dfoot .del:hover{color:var(--bad)}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:12px 20px;border-radius:99px;font-size:13.5px;font-weight:600;box-shadow:var(--shadow-lg);opacity:0;pointer-events:none;transition:.22s;z-index:90;display:flex;align-items:center;gap:9px}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast .td{width:8px;height:8px;border-radius:99px;background:var(--good)}
+
+@media (max-width:900px){
+  .hero .wrap{grid-template-columns:1fr;gap:30px}
+  .services{grid-template-columns:1fr 1fr}
+  .how,.reviews{grid-template-columns:1fr}
+  .band .wrap{grid-template-columns:1fr 1fr;gap:20px}
+  .kpis{grid-template-columns:1fr 1fr}
+  .step .arrow{display:none}
+  .phone small{display:none}
+}
+@media (max-width:560px){
+  .services{grid-template-columns:1fr}
+  .row2{grid-template-columns:1fr}
+  .nav-right .seg .full{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="logomark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20M5 5l14 14M19 5 5 19"/></svg></span>
+    <span>Northline<small>Heating &amp; Air</small></span>
+  </div>
+  <div class="nav-right">
+    <a class="phone" href="tel:+15552129080"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span>(555) 212-9080<small>24/7 emergency line</small></span></a>
+    <div class="seg" role="tablist" aria-label="Views">
+      <button role="tab" id="tab-site" aria-selected="true" onclick="showView('site')">Website</button>
+      <button role="tab" id="tab-dash" aria-selected="false" onclick="showView('dashboard')"><span class="full">Leads</span> <span class="count" id="nav-count">0</span></button>
+    </div>
+    <button class="iconbtn" title="Toggle theme" aria-label="Toggle theme" onclick="toggleTheme()">◐</button>
+  </div>
+</header>
+
+<!-- ================= WEBSITE ================= -->
+<div id="view-site">
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero-copy">
+        <span class="eyebrow"><span class="pulse"></span> Same-day service · 24/7 emergencies</span>
+        <h1>Heating &amp; cooling,<br>done <span class="hot">right</span> the first time.</h1>
+        <p class="lede">Licensed HVAC pros for repairs, installs, and tune-ups across the metro. Book online and we'll confirm your free estimate within the hour.</p>
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="#quote">Get a free estimate →</a>
+          <a class="callnow" href="tel:+15552129080"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg> or call (555) 212-9080</a>
+        </div>
+        <div class="badges">
+          <span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Licensed &amp; insured</span>
+          <span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Upfront flat pricing</span>
+          <span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Financing available</span>
+          <span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> 100% satisfaction guarantee</span>
+        </div>
+      </div>
+
+      <div class="formcard" id="quote">
+        <div class="head">
+          <span class="free">◎ Free · No obligation</span>
+          <h3>Book your free estimate</h3>
+          <p>Fill this out and we'll email your confirmation right away.</p>
+        </div>
+        <form class="formbody" id="leadform" autocomplete="on">
+          <div class="row2">
+            <div class="field"><label for="f-name">Full name <span class="req">*</span></label><input id="f-name" name="name" placeholder="Jordan Alvarez" required></div>
+            <div class="field"><label for="f-phone">Phone <span class="req">*</span></label><input id="f-phone" name="phone" placeholder="(555) 018-2245" inputmode="tel" required></div>
+          </div>
+          <div class="field"><label for="f-email">Email <span class="req">*</span></label><input id="f-email" name="email" type="email" placeholder="you@email.com" required></div>
+          <div class="row2">
+            <div class="field"><label for="f-address">Address / area</label><input id="f-address" name="address" placeholder="Street or neighborhood"></div>
+            <div class="field"><label for="f-zip">ZIP code</label><input id="f-zip" name="zip" placeholder="00000" inputmode="numeric"></div>
+          </div>
+          <div class="row2">
+            <div class="field"><label for="f-service">What do you need? <span class="req">*</span></label>
+              <select id="f-service" name="service" required>
+                <option value="AC repair">AC repair</option>
+                <option value="AC install / replace">AC install / replace</option>
+                <option value="Heating / furnace repair">Heating / furnace repair</option>
+                <option value="Furnace install / replace">Furnace install / replace</option>
+                <option value="Maintenance tune-up">Maintenance tune-up</option>
+                <option value="Indoor air quality">Indoor air quality</option>
+                <option value="Other / not sure">Other / not sure</option>
+              </select></div>
+            <div class="field"><label for="f-urgency">How soon? <span class="req">*</span></label>
+              <select id="f-urgency" name="urgency" required>
+                <option value="emergency">Emergency — no heat / no AC</option>
+                <option value="soon" selected>Within a few days</option>
+                <option value="flex">Flexible / planning ahead</option>
+              </select></div>
+          </div>
+          <div class="field"><label for="f-msg">Tell us about the system or issue</label><textarea id="f-msg" name="message" placeholder="10-year-old AC unit, not cooling, makes a rattling sound…"></textarea></div>
+          <button class="btn btn-primary btn-block" type="submit">Request my free estimate →</button>
+          <p class="fineprint"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Your info is only used to contact you about service.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <span class="eyebrow">What we do</span>
+      <h2>One team for every season</h2>
+      <p>From a summer AC breakdown to a winter furnace install, we handle it all — with honest pricing and clean, on-time work.</p>
+    </div>
+    <div class="services">
+      <div class="svc hot"><div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2s3 4 3 7a3 3 0 0 1-6 0c0-3 3-7 3-7z"/><path d="M12 22a6 6 0 0 0 6-6c0-2-1-3.5-2-5"/></svg></div><h3>Heating &amp; furnace</h3><p>Repairs, replacements, and safety checks for furnaces, heat pumps, and boilers.</p><div class="from">from <b>$89</b> diagnostic</div></div>
+      <div class="svc"><div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 19a4.5 4.5 0 1 1 3-7.9M14 7a4 4 0 1 1 4 4H4"/><path d="M4 15h11a3 3 0 1 1-3 3"/></svg></div><h3>Air conditioning</h3><p>Fast AC repair and high-efficiency system installs that lower your energy bills.</p><div class="from">from <b>$89</b> diagnostic</div></div>
+      <div class="svc"><div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.9 6.9a2.12 2.12 0 0 1-3-3l6.9-6.9a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div><h3>Maintenance plans</h3><p>Seasonal tune-ups that prevent breakdowns and keep your warranty valid.</p><div class="from">from <b>$19</b>/mo</div></div>
+      <div class="svc"><div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2 8 4-16 2 8h6"/></svg></div><h3>Air quality</h3><p>Filters, purifiers, humidifiers, and duct cleaning for healthier indoor air.</p><div class="from">free <b>assessment</b></div></div>
+    </div>
+  </section>
+
+  <div class="band"><div class="wrap">
+    <div class="stat"><div class="n">18<span class="u">+</span></div><div class="l">Years in business</div></div>
+    <div class="stat"><div class="n">4.9<span class="u">★</span></div><div class="l">Average rating · 1,200 reviews</div></div>
+    <div class="stat"><div class="n">24<span class="u">/7</span></div><div class="l">Emergency availability</div></div>
+    <div class="stat"><div class="n">60<span class="u">min</span></div><div class="l">Average quote turnaround</div></div>
+  </div></div>
+
+  <section class="section">
+    <div class="section-head">
+      <span class="eyebrow">What happens after you sign up</span>
+      <h2>You book. We take it from there.</h2>
+      <p>No waiting around wondering if anyone got your request — the follow-up is automatic.</p>
+    </div>
+    <div class="how">
+      <div class="step"><div class="n">1</div><h3>You submit the form</h3><p>Your request lands in our system instantly with everything we need to help you.</p><svg class="arrow" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+      <div class="step mail"><div class="n">✉</div><h3>You get an instant email</h3><p>An automated confirmation hits your inbox right away with your details and next steps.</p><svg class="arrow" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+      <div class="step"><div class="n">↻</div><h3>We follow up in a week</h3><p>Haven't booked yet? We automatically check back after 7 days so nothing falls through.</p></div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <div class="reviews">
+      <div class="review"><div class="stars">★★★★★</div><p>"Our AC died in a heat wave and Northline had someone out the same afternoon. Fair price, no upsell. The confirmation email came through in seconds."</p><div class="who"><b>Rebecca T.</b> Maplewood</div></div>
+      <div class="review"><div class="stars">★★★★★</div><p>"Booked a furnace tune-up online at 11pm. Got an email right away and a call the next morning. This is how every company should run."</p><div class="who"><b>Daniel O.</b> Riverside</div></div>
+      <div class="review"><div class="stars">★★★★★</div><p>"I forgot I'd even asked for a quote, then they followed up a week later and we ended up replacing the whole system. Great crew."</p><div class="who"><b>Priya S.</b> Oak Hill</div></div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <div class="cta-final">
+      <h2>No heat? No cool air? No problem.</h2>
+      <p>Book your free estimate online or call our 24/7 line — a real person always answers.</p>
+      <div class="row">
+        <a class="btn btn-primary" href="#quote">Get a free estimate →</a>
+        <a class="callnow" href="tel:+15552129080"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg> (555) 212-9080</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div>
+      <div class="brand"><span class="logomark" style="width:28px;height:28px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"/></svg></span> Northline Heating &amp; Air</div>
+      Licensed HVAC contractor · Lic #HVAC-000000<br>Serving the greater metro area.
+    </div>
+    <div><b>Hours</b><br>Mon–Sat 7am–8pm<br>24/7 emergency service</div>
+    <div><b>Contact</b><br>(555) 212-9080<br>service@northlinehvac.example</div>
+  </footer>
+  <p class="storenote" id="store-note-site"></p>
+</div>
+
+<!-- ================= DASHBOARD ================= -->
+<main class="dash" id="view-dashboard" hidden>
+  <div class="dash-head">
+    <div><h2>Lead &amp; follow-up dashboard</h2><p id="dash-sub">Every sign-up, its automated emails, and the 7-day follow-up — all tracked.</p></div>
+    <button class="btn btn-ghost" onclick="showView('site')">+ Test the sign-up form</button>
+  </div>
+  <div class="kpis" id="kpis"></div>
+  <div class="toolbar">
+    <div class="chips" id="stage-chips"></div>
+    <span class="spacer"></span>
+    <button class="linkbtn" id="clear-ex" hidden onclick="clearExamples()">Clear example leads</button>
+  </div>
+  <div class="tablewrap">
+    <div class="tscroll">
+      <table>
+        <thead><tr><th>Customer</th><th>Service</th><th>Urgency</th><th>Stage</th><th>Automated emails</th><th></th></tr></thead>
+        <tbody id="leadrows"></tbody>
+      </table>
+    </div>
+    <div class="empty" id="empty-state" hidden></div>
+  </div>
+  <p class="storenote" id="store-note-dash"></p>
+</main>
+
+<div class="scrim" id="scrim" onclick="closeDrawer()"></div>
+<aside class="drawer" id="drawer" aria-hidden="true"></aside>
+<div class="toast" id="toast"><span class="td"></span><span id="toast-msg"></span></div>
+
+<script>
+const STAGES=[{k:"new",label:"New",cls:"new"},{k:"contacted",label:"Contacted",cls:"contacted"},{k:"scheduled",label:"Scheduled",cls:"scheduled"},{k:"won",label:"Booked / won",cls:"won"},{k:"lost",label:"Lost",cls:"lost"}];
+const stageMap=Object.fromEntries(STAGES.map(s=>[s.k,s]));
+const URG={emergency:{label:"Emergency",cls:"emergency"},soon:{label:"Few days",cls:"soon"},flex:{label:"Flexible",cls:"flex"}};
+const LOCAL_KEY="northline_v1", DAY=864e5, COMPANY="Northline Heating & Air", PHONE="(555) 212-9080";
+let db=null, leads=[], activeFilter="all", openId=null, usingDb=false;
+
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const uid=()=>crypto.randomUUID?crypto.randomUUID():"id"+Date.now()+Math.random().toString(16).slice(2);
+const initials=n=>(n||"?").trim().split(/\s+/).slice(0,2).map(w=>w[0]).join("").toUpperCase()||"?";
+const todayKey=()=>{const d=new Date();d.setHours(0,0,0,0);return d.getTime();};
+const dayKey=iso=>{if(!iso)return null;const d=new Date(iso);d.setHours(0,0,0,0);return d.getTime();};
+const fmtDate=iso=>iso?new Date(iso).toLocaleDateString(undefined,{month:"short",day:"numeric"}):"—";
+const fmtWhen=ts=>{const d=new Date(ts);return d.toLocaleDateString(undefined,{month:"short",day:"numeric"})+" · "+d.toLocaleTimeString(undefined,{hour:"numeric",minute:"2-digit"});};
+function fuState(l){ if(l.stage==="won"||l.stage==="lost")return"none"; if(l.followupSent)return"sent"; if(!l.followupAt)return"none"; const dk=dayKey(l.followupAt),tk=todayKey(); if(dk<tk)return"over"; if(dk===tk)return"today"; return"future"; }
+function toast(m){const t=$("#toast");$("#toast-msg").textContent=m;t.classList.add("show");clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.remove("show"),2200);}
+
+async function initStore(){
+  try{ db=window.claude?await claude.use("db"):null; }catch(e){ db=null; }
+  if(db){ usingDb=true; setNote("Live database · sign-ups are saved and shared with your team. Automated emails are sent by your scheduled follow-up agent.");
+    db.collection("leads").onSnapshot(snap=>{ leads=snap.docs.map(d=>({id:d.id,...d.data()})); sortLeads(); renderAll(); }, ()=>{ usingDb=false; useLocal(); });
+  } else useLocal();
+}
+function useLocal(){ setNote("Demo mode · sign-ups are saved in this browser only. Publish to enable the shared database + email automation.");
+  try{const r=localStorage.getItem(LOCAL_KEY);leads=r?JSON.parse(r):seed();}catch(e){leads=seed();}
+  if(!localStorage.getItem(LOCAL_KEY))persist(); sortLeads(); renderAll(); }
+function persist(){ if(usingDb)return; try{localStorage.setItem(LOCAL_KEY,JSON.stringify(leads));}catch(e){} }
+function setNote(t){["#store-note-site","#store-note-dash"].forEach(s=>{const e=$(s);if(e)e.textContent=t;});}
+async function saveLead(l){ const{id,...body}=l;
+  if(usingDb&&db){try{await db.collection("leads").doc(id).set(body);}catch(e){toast("Couldn't save — try again");}}
+  else{const i=leads.findIndex(x=>x.id===id);if(i<0)leads.push(l);else leads[i]=l;persist();sortLeads();renderAll();} }
+async function deleteLead(id){ if(usingDb&&db){try{await db.collection("leads").doc(id).delete();}catch(e){}} else{leads=leads.filter(x=>x.id!==id);persist();renderAll();} }
+function sortLeads(){ const rank=s=>({new:0,contacted:1,scheduled:2,won:3,lost:4}[s]??9);
+  leads.sort((a,b)=>{ const ua=a.urgency==="emergency",ub=b.urgency==="emergency"; if(ua!==ub&&a.stage==="new"&&b.stage==="new")return ua?-1:1;
+    if(rank(a.stage)!==rank(b.stage))return rank(a.stage)-rank(b.stage); return (b.createdAt||0)-(a.createdAt||0); }); }
+
+function seed(){ const now=Date.now(),mk=o=>Object.assign({id:uid(),isExample:true,value:0,notes:[],confirmSent:true,followupSent:false},o);
+  return [
+    mk({name:"The Okafor Family",email:"okafor.home@email.com",phone:"(555) 604-2210",address:"12 Birch Ln",zip:"48108",service:"AC repair",urgency:"emergency",message:"AC completely dead, house is 84°F with a newborn. Please hurry.",stage:"new",createdAt:now-2*36e5,signupAt:now-2*36e5,followupAt:now-2*36e5+7*DAY,confirmSentAt:now-2*36e5+9e4,notes:[{ts:now-2*36e5,text:"Sign-up received via website.",sys:true},{ts:now-2*36e5+9e4,text:"Automated confirmation email sent.",sys:true}]}),
+    mk({name:"Marcus Bell",email:"m.bell@email.com",phone:"(555) 771-9032",address:"Riverside",zip:"48104",service:"Maintenance tune-up",urgency:"soon",message:"Want a pre-winter furnace tune-up, weekday mornings preferred.",stage:"contacted",value:0,createdAt:now-9*DAY,signupAt:now-9*DAY,followupAt:now-2*DAY,confirmSentAt:now-9*DAY+9e4,notes:[{ts:now-9*DAY,text:"Sign-up received via website.",sys:true},{ts:now-9*DAY+9e4,text:"Automated confirmation email sent.",sys:true},{ts:now-8*DAY,text:"Called, left voicemail."}]}),
+    mk({name:"Priya Menon",email:"priya.menon@email.com",phone:"(555) 240-1187",address:"Oak Hill",zip:"48103",service:"Furnace install / replace",urgency:"flex",message:"20-year-old furnace, planning to replace before winter. Wants a quote.",stage:"scheduled",value:4800,createdAt:now-3*DAY,signupAt:now-3*DAY,followupAt:now-3*DAY+7*DAY,confirmSentAt:now-3*DAY+9e4,notes:[{ts:now-3*DAY,text:"Sign-up received via website.",sys:true},{ts:now-3*DAY+9e4,text:"Automated confirmation email sent.",sys:true},{ts:now-1*DAY,text:"In-home estimate booked for Friday. Quoted $4,800."}]}),
+    mk({name:"Dana Whitfield",email:"dana.w@email.com",phone:"(555) 019-4420",address:"Maplewood",zip:"48105",service:"AC install / replace",urgency:"flex",message:"Replaced the whole system after the follow-up call.",stage:"won",value:6200,createdAt:now-16*DAY,signupAt:now-16*DAY,followupAt:now-9*DAY,confirmSentAt:now-16*DAY+9e4,followupSent:true,followupSentAt:now-9*DAY,wonAt:now-6*DAY,notes:[{ts:now-16*DAY,text:"Sign-up received via website.",sys:true},{ts:now-16*DAY+9e4,text:"Automated confirmation email sent.",sys:true},{ts:now-9*DAY,text:"Automated 7-day follow-up email sent.",sys:true},{ts:now-6*DAY,text:"Booked full system replacement — $6,200."}]}),
+  ];
+}
+
+function renderAll(){renderKpis();renderChips();renderTable();renderNav();updateClear();if(openId)renderDrawer();}
+function renderNav(){const due=leads.filter(l=>["over","today"].includes(fuState(l))||(l.stage==="new"&&!l.confirmSent)).length;const e=$("#nav-count");e.textContent=due;e.style.display=due?"inline-block":"none";}
+function updateClear(){$("#clear-ex").hidden=!leads.some(l=>l.isExample);}
+function renderKpis(){
+  const now=new Date(),m=now.getMonth(),y=now.getFullYear();
+  const newLeads=leads.filter(l=>l.stage==="new").length;
+  const fuDue=leads.filter(l=>["over","today"].includes(fuState(l))).length;
+  const awaiting=leads.filter(l=>!l.confirmSent&&l.stage!=="lost").length;
+  const wonThis=leads.filter(l=>l.stage==="won"&&(()=>{const c=new Date(l.wonAt||l.createdAt||0);return c.getMonth()===m&&c.getFullYear()===y;})());
+  const wonVal=wonThis.reduce((s,l)=>s+(+l.value||0),0);
+  const cards=[
+    {lbl:"New leads",dot:"var(--info)",val:newLeads,sub:newLeads?"awaiting first contact":"all handled"},
+    {lbl:"Follow-ups due",dot:"var(--warn)",val:fuDue,sub:fuDue?"7-day check-in ready":"none today",attn:fuDue>0},
+    {lbl:"Awaiting confirmation",dot:"var(--ember)",val:awaiting,sub:awaiting?"email not sent yet":"all confirmed",attn:awaiting>0},
+    {lbl:"Booked this month",dot:"var(--good)",val:wonThis.length,sub:wonVal?("$"+wonVal.toLocaleString()+" in jobs"):"—"},
+  ];
+  $("#kpis").innerHTML=cards.map(c=>`<div class="kpi ${c.attn?"attn":""}"><div class="lbl"><span class="dot" style="background:${c.dot}"></span>${c.lbl}</div><div class="val">${c.val}</div><div class="sub">${esc(c.sub)}</div></div>`).join("");
+}
+function renderChips(){const counts=Object.fromEntries(STAGES.map(s=>[s.k,0]));leads.forEach(l=>counts[l.stage]!=null&&counts[l.stage]++);
+  const all=[{k:"all",label:"All",n:leads.length},...STAGES.map(s=>({k:s.k,label:s.label,n:counts[s.k]}))];
+  $("#stage-chips").innerHTML=all.map(c=>`<button class="chip" aria-pressed="${activeFilter===c.k}" onclick="setFilter('${c.k}')">${esc(c.label)} <span class="c">${c.n}</span></button>`).join("");}
+function setFilter(k){activeFilter=k;renderChips();renderTable();}
+function autoCell(l){
+  const conf=l.confirmSent?`<span class="a done">✓ Confirmation sent</span>`:`<span class="a due">⏳ Confirmation pending</span>`;
+  let fu;const st=fuState(l);
+  if(l.stage==="won"||l.stage==="lost")fu=`<span class="a">— follow-up closed</span>`;
+  else if(st==="sent")fu=`<span class="a done">✓ Follow-up sent</span>`;
+  else if(st==="over")fu=`<span class="a over">⚠ Follow-up overdue</span>`;
+  else if(st==="today")fu=`<span class="a due">● Follow-up due today</span>`;
+  else if(st==="future")fu=`<span class="a">↻ Follow-up ${fmtDate(l.followupAt)}</span>`;
+  else fu=`<span class="a">↻ Follow-up not set</span>`;
+  return `<div class="auto">${conf}${fu}</div>`;
+}
+function renderTable(){
+  const list=activeFilter==="all"?leads:leads.filter(l=>l.stage===activeFilter);
+  const tb=$("#leadrows"),empty=$("#empty-state");
+  if(!list.length){tb.innerHTML="";empty.hidden=false;empty.innerHTML=leads.length?`<h3>No leads in this stage</h3><p>Try another filter.</p>`:`<h3>No sign-ups yet</h3><p>Submit the form on the website to see leads appear here in real time.</p>`;return;}
+  empty.hidden=true;
+  tb.innerHTML=list.map(l=>{const s=stageMap[l.stage]||stageMap.new,u=URG[l.urgency]||URG.flex;
+    return `<tr onclick="openDrawer('${l.id}')">
+      <td><div class="lead-name"><span class="avatar">${esc(initials(l.name))}</span><span>${esc(l.name)} ${l.isExample?'<span class="tag-ex">example</span>':''}<span class="lead-sub" style="display:block">${esc(l.email||l.phone||"")}</span></span></div></td>
+      <td>${esc(l.service||"—")}</td>
+      <td><span class="urg ${u.cls}">${u.label}</span></td>
+      <td><span class="pill ${s.cls}"><span class="d"></span>${s.label}</span></td>
+      <td>${autoCell(l)}</td>
+      <td onclick="event.stopPropagation()">${nextAction(l)}</td>
+    </tr>`;}).join("");
+}
+function nextAction(l){
+  if(l.stage==="new")return `<button class="rowbtn" onclick="advance('${l.id}')">Mark contacted</button>`;
+  if(l.stage==="contacted")return `<button class="rowbtn" onclick="setStage('${l.id}','scheduled')">Mark scheduled</button>`;
+  if(l.stage==="scheduled")return `<button class="rowbtn" onclick="setStage('${l.id}','won')">Mark booked</button>`;
+  return `<button class="rowbtn" onclick="openDrawer('${l.id}')">Open</button>`;
+}
+function advance(id){const l=leads.find(x=>x.id===id);if(!l)return;const o=["new","contacted","scheduled","won"];setStage(id,o[Math.min(o.indexOf(l.stage)+1,o.length-1)]);}
+function setStage(id,stage){const l=leads.find(x=>x.id===id);if(!l)return;l.stage=stage;if(stage==="won"&&!l.wonAt)l.wonAt=Date.now();
+  l.notes=[...(l.notes||[]),{ts:Date.now(),text:`Stage → ${stageMap[stage].label}`,sys:true}];saveLead(l);toast(stage==="won"?"🎉 Marked as booked":`Moved to ${stageMap[stage].label}`);}
+function addNote(id,text){const l=leads.find(x=>x.id===id);if(!l||!text.trim())return;l.notes=[...(l.notes||[]),{ts:Date.now(),text:text.trim()}];saveLead(l);toast("Note added");}
+function markEmail(id,which){const l=leads.find(x=>x.id===id);if(!l)return;const now=Date.now();
+  if(which==="confirm"){l.confirmSent=true;l.confirmSentAt=now;l.notes=[...(l.notes||[]),{ts:now,text:"Confirmation email sent (manual).",sys:true}];toast("Marked confirmation sent");}
+  else{l.followupSent=true;l.followupSentAt=now;l.notes=[...(l.notes||[]),{ts:now,text:"7-day follow-up email sent (manual).",sys:true}];toast("Marked follow-up sent");}
+  saveLead(l);}
+async function clearExamples(){const ex=leads.filter(l=>l.isExample);if(!ex.length)return;if(!confirm(`Remove ${ex.length} example lead${ex.length>1?"s":""}?`))return;
+  for(const l of ex)await deleteLead(l.id); if(!usingDb){leads=leads.filter(l=>!l.isExample);persist();renderAll();} toast("Examples cleared");}
+
+function openDrawer(id){openId=id;renderDrawer();$("#drawer").classList.add("open");$("#scrim").classList.add("open");$("#drawer").setAttribute("aria-hidden","false");}
+function closeDrawer(){openId=null;$("#drawer").classList.remove("open");$("#scrim").classList.remove("open");$("#drawer").setAttribute("aria-hidden","true");}
+function renderDrawer(){
+  const l=leads.find(x=>x.id===openId);if(!l){closeDrawer();return;}
+  const notes=[...(l.notes||[])].sort((a,b)=>b.ts-a.ts),u=URG[l.urgency]||URG.flex,st=fuState(l);
+  $("#drawer").innerHTML=`
+    <div class="dh"><span class="avatar">${esc(initials(l.name))}</span>
+      <div><h3>${esc(l.name)} ${l.isExample?'<span class="tag-ex">example</span>':''}</h3>
+        <div class="meta">${l.email?`<a href="mailto:${esc(l.email)}">${esc(l.email)}</a>`:""}${l.phone?`<a href="tel:${esc(l.phone)}">${esc(l.phone)}</a>`:""}<span>${esc(l.service||"")} · <span class="urg ${u.cls}">${u.label}</span></span></div>
+      </div><button class="close" onclick="closeDrawer()" aria-label="Close">×</button></div>
+    <div class="dbody">
+      <div class="sect"><div class="st">Request details</div>
+        <dl class="kv">
+          ${l.address?`<dt>Location</dt><dd>${esc(l.address)}${l.zip?" · "+esc(l.zip):""}</dd>`:""}
+          <dt>Signed up</dt><dd>${l.signupAt?fmtWhen(l.signupAt):"—"}</dd>
+          <dt>Est. value</dt><dd><input type="number" min="0" step="50" value="${l.value||""}" placeholder="0" style="max-width:120px;text-align:right;padding:6px 9px" onchange="const v=leads.find(x=>x.id==='${l.id}');v.value=+this.value||0;saveLead(v);toast('Value updated');"></dd>
+        </dl>
+      </div>
+      ${l.message?`<div class="sect"><div class="st">Their message</div><div class="msgbox">"${esc(l.message)}"</div></div>`:""}
+      <div class="sect"><div class="st">Automated emails</div>
+        <div class="autobox">
+          <div class="arow ${l.confirmSent?"done":"due"}"><span class="ai">${l.confirmSent?"✓":"✉"}</span><div class="at"><b>Inquiry confirmation</b><span>${l.confirmSent?("Sent "+fmtWhen(l.confirmSentAt||l.signupAt)):"Sends automatically on sign-up"}</span></div>${l.confirmSent?"":`<button class="rowbtn" onclick="markEmail('${l.id}','confirm')">Mark sent</button>`}</div>
+          <div class="arow ${st==="sent"?"done":(st==="over"||st==="today")?"due":""}"><span class="ai">${st==="sent"?"✓":"↻"}</span><div class="at"><b>7-day follow-up</b><span>${l.stage==="won"||l.stage==="lost"?"Closed — no follow-up needed":st==="sent"?("Sent "+fmtWhen(l.followupSentAt)):l.followupAt?("Scheduled for "+fmtDate(l.followupAt)+(st==="over"?" · overdue":st==="today"?" · due today":"")):"Not scheduled"}</span></div>${(st==="over"||st==="today")?`<button class="rowbtn" onclick="markEmail('${l.id}','followup')">Mark sent</button>`:""}</div>
+        </div>
+      </div>
+      <div class="sect"><div class="st">Stage</div><div class="stage-row">${STAGES.map(s=>`<button class="stage-opt ${s.cls}" aria-pressed="${l.stage===s.k}" onclick="setStage('${l.id}','${s.k}')">${s.label}</button>`).join("")}</div></div>
+      <div class="sect"><div class="st">Log a note</div>
+        <form class="noteform" onsubmit="event.preventDefault();const t=this.note.value;this.note.value='';addNote('${l.id}',t);">
+          <textarea name="note" placeholder="Called and left a message…" style="min-height:54px"></textarea>
+          <button class="btn btn-ghost" type="submit" style="justify-self:start;padding:9px 16px;font-size:13.5px">Add note</button>
+        </form></div>
+      <div class="sect"><div class="st">Activity</div><div class="timeline">
+        ${notes.length?notes.map(n=>`<div class="tl"><div class="dotwrap"><span class="tdot" style="${n.sys?'background:var(--muted);box-shadow:0 0 0 3px var(--surface-2)':''}"></span><span class="tline"></span></div><div class="tc"><div class="tt">${esc(n.text)}</div><div class="tm">${fmtWhen(n.ts)}</div></div></div>`).join(""):`<div class="tc"><div class="tt" style="color:var(--muted)">No activity yet.</div></div>`}
+      </div></div>
+    </div>
+    <div class="dfoot"><button class="btn btn-blue" style="padding:10px 16px;font-size:14px" onclick="closeDrawer()">Done</button>
+      <button class="del" onclick="if(confirm('Delete this lead?')){deleteLead('${l.id}');closeDrawer();toast('Lead deleted');}">🗑 Delete</button></div>`;
+}
+
+$("#leadform").addEventListener("submit",async e=>{
+  e.preventDefault();const fd=new FormData(e.target),now=Date.now();
+  const lead={id:uid(),name:fd.get("name").trim(),phone:fd.get("phone").trim(),email:fd.get("email").trim(),
+    address:(fd.get("address")||"").trim(),zip:(fd.get("zip")||"").trim(),service:fd.get("service"),urgency:fd.get("urgency"),
+    message:(fd.get("message")||"").trim(),stage:"new",value:0,createdAt:now,signupAt:now,followupAt:now+7*DAY,
+    confirmSent:false,followupSent:false,notes:[{ts:now,text:"Sign-up received via website.",sys:true}]};
+  await saveLead(lead);
+  const first=lead.name.split(" ")[0]||"there";
+  e.target.closest(".formcard").innerHTML=`<div class="formsuccess">
+    <div class="check">✓</div>
+    <h3>You're all set, ${esc(first)}!</h3>
+    <p>Your request is in. A confirmation email is on its way, and we'll be in touch shortly.</p>
+    <div class="mailprev">
+      <div class="mh"><span class="dot"></span> Inbox · from ${esc(COMPANY)}</div>
+      <div class="mb"><div class="subj">✅ We got your request — ${esc(lead.service)}</div>
+        Hi ${esc(first)}, thanks for reaching out to ${esc(COMPANY)}! We've received your request for <b>${esc(lead.service)}</b>${lead.urgency==="emergency"?" and flagged it as <b>urgent</b>":""}. A team member will contact you at <b>${esc(lead.phone||lead.email)}</b> shortly. For emergencies call ${esc(PHONE)}.
+        <div class="auto">↻ This confirmation was sent automatically. If we don't connect, we'll follow up in 7 days.</div>
+      </div>
+    </div>
+    <button class="btn btn-blue" onclick="showView('dashboard')">See it in the dashboard →</button>
+    <button class="btn btn-ghost" onclick="location.reload()">Submit another</button>
+  </div>`;
+  toast("New sign-up captured");
+});
+
+function showView(v){const site=v==="site";$("#view-site").hidden=!site;$("#view-dashboard").hidden=site;
+  $("#tab-site").setAttribute("aria-selected",site);$("#tab-dash").setAttribute("aria-selected",!site);window.scrollTo({top:0,behavior:"instant"});}
+function toggleTheme(){const cur=document.documentElement.getAttribute("data-theme");const sd=matchMedia("(prefers-color-scheme:dark)").matches;
+  const next=cur?(cur==="dark"?"light":"dark"):(sd?"light":"dark");document.documentElement.setAttribute("data-theme",next);try{localStorage.setItem("northline_theme",next);}catch(e){}}
+(function(){try{const t=localStorage.getItem("northline_theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}})();
+document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener("click",e=>{const el=$(a.getAttribute("href"));if(el){e.preventDefault();el.scrollIntoView({behavior:"smooth",block:"center"});}}));
+initStore();
+</script>
