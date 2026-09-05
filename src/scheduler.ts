@@ -11,9 +11,10 @@ const CHECK_INTERVAL_MS = 30_000;
 const MAX_SEND_ATTEMPTS = 3;
 
 /**
- * Step 5 of the workflow: schedule an automatic follow-up to the lead at the
- * time the AI recommended (or FOLLOWUP_MINUTES, if set, for quick testing).
- * Follow-ups persist to data/reminders.json so they survive restarts.
+ * Step 5 of the workflow: schedule the single automatic follow-up to the lead,
+ * one week after the welcome email (configurable via FOLLOWUP_DAYS, or
+ * FOLLOWUP_MINUTES for quick testing). Persists to data/reminders.json so it
+ * survives restarts.
  */
 export function scheduleFollowUp(
   contact: CrmContact,
@@ -23,7 +24,7 @@ export function scheduleFollowUp(
   const delayMs =
     config.followupMinutes != null
       ? config.followupMinutes * 60_000
-      : analysis.follow_up.delay_hours * 3600_000;
+      : config.followupDays * 86_400_000;
 
   const reminder: FollowUpReminder = {
     id: newId("rem"),

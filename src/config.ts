@@ -34,9 +34,12 @@ export const config = {
   twilioAuthToken: process.env.TWILIO_AUTH_TOKEN ?? "",
   twilioFromNumber: process.env.TWILIO_FROM_NUMBER ?? "",
 
-  // When set, overrides the AI's recommended follow-up delay with this many
-  // minutes. Handy for testing: FOLLOWUP_MINUTES=1 fires follow-ups a minute
-  // after the lead is submitted instead of hours later.
+  // How long after the welcome email to send the single follow-up.
+  // Defaults to 7 days (one week). Change FOLLOWUP_DAYS to adjust.
+  followupDays: process.env.FOLLOWUP_DAYS ? Number(process.env.FOLLOWUP_DAYS) : 7,
+
+  // Testing override: when set, the follow-up fires this many minutes after
+  // the lead is submitted instead of a week later (e.g. FOLLOWUP_MINUTES=1).
   followupMinutes: process.env.FOLLOWUP_MINUTES
     ? Number(process.env.FOLLOWUP_MINUTES)
     : null,

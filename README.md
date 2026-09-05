@@ -6,7 +6,7 @@ An AI-powered lead intake pipeline for **real estate agents, contractors, and ho
 2. **AI summarizes the inquiry** — Claude reads the message, writes a CRM summary, scores the lead (hot/warm/cold), and extracts key details (budget, timeline, location...)
 3. **Creates a contact in the CRM** — HubSpot (with the AI summary attached as a note), or a built-in local CRM if you haven't connected one
 4. **Sends a personalized email and text** — Claude drafts a first-touch email + SMS that reference the specifics of the inquiry; delivered via SendGrid/Twilio
-5. **Schedules a follow-up reminder** — at the time the AI recommends (hot leads within hours, cold leads in a few days), the agent gets a reminder email
+5. **Sends one follow-up a week later** — exactly one automatic follow-up email goes to the lead one week after the welcome email (change the timing with `FOLLOWUP_DAYS`)
 
 ```
 Website form ──▶ POST /api/leads ──▶ Claude (summary + score + drafts)
@@ -119,10 +119,10 @@ how it'll look, and changes take effect immediately (no restart).
 - `lead_quality` — `hot` / `warm` / `cold`
 - `key_details` — extracted budget, location, timeline, etc.
 - `email` / `sms` — personalized first-touch messages signed by your agent
-- `follow_up.delay_hours` — recommended follow-up timing with a reason
+- `follow_up.reason` — a short reason shown on the scheduled follow-up
 
-Each lead gets **one** welcome email and **one** follow-up (sent once at the
-scheduled time, then never again). Repeat submissions from the same email
+Each lead gets **one** welcome email immediately and **one** follow-up email
+one week later (sent once, then never again). Repeat submissions from the same email
 address are ignored for `DEDUPE_DAYS` days (default 30), so a lead is never
 emailed repeatedly. Follow-ups persist to `data/reminders.json` and survive
 restarts; a background loop checks every 30 seconds and sends one when it's due.
