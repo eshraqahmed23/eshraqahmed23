@@ -102,13 +102,23 @@ app.get("/api/leads.csv", (_req, res) => {
     "phone",
     "source",
     "lead_quality",
+    "service_requested",
     "summary",
   ];
   const esc = (v: unknown) => `"${String(v ?? "").replace(/"/g, '""')}"`;
   const csv = [
     header.join(","),
     ...rows.map((c) =>
-      [c.created_at, c.name, c.email, c.phone, c.source, c.lead_quality, c.summary]
+      [
+        c.created_at,
+        c.name,
+        c.email,
+        c.phone,
+        c.source,
+        c.lead_quality,
+        c.service_requested,
+        c.summary,
+      ]
         .map(esc)
         .join(","),
     ),
@@ -148,7 +158,8 @@ app.get("/api/health", (_req, res) =>
 
 app.listen(config.port, () => {
   console.log(`Lead capture workflow listening on http://localhost:${config.port}`);
-  console.log(`Demo form:      http://localhost:${config.port}/`);
+  console.log(`Website:        http://localhost:${config.port}/`);
+  console.log(`Dashboard:      http://localhost:${config.port}/dashboard.html`);
   console.log(`Email editor:   http://localhost:${config.port}/editor.html`);
   console.log(`Leads (CSV):    http://localhost:${config.port}/api/leads.csv`);
   startScheduler();

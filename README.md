@@ -1,21 +1,35 @@
-# AI Lead Capture & Follow-Up Workflow
+# Northline Heating & Air — HVAC Website + Lead Follow-Up
 
-An AI-powered lead intake pipeline for **real estate agents, contractors, and homebuilders**. When a customer submits your website form, the workflow:
+A complete **HVAC company website** with an AI-powered lead capture and follow-up
+engine behind it. It ships as three parts:
+
+- **`/`** — a real, polished marketing **website** with a free-estimate sign-up form
+- **`/dashboard.html`** — a separate internal **lead & follow-up dashboard** for your team
+- **A backend workflow** that turns every sign-up into a tracked, followed-up lead
+
+When a customer submits the sign-up form, the workflow:
 
 1. **Captures the lead** — `POST /api/leads` receives the form submission
-2. **AI summarizes the inquiry** — Claude reads the message, writes a CRM summary, scores the lead (hot/warm/cold), and extracts key details (budget, timeline, location...)
+2. **AI summarizes the inquiry** — Claude reads the message, writes a CRM summary, scores the lead (hot/warm/cold), and extracts key details (system, urgency, location...)
 3. **Creates a contact in the CRM** — HubSpot (with the AI summary attached as a note), or a built-in local CRM if you haven't connected one
-4. **Sends a personalized email and text** — Claude drafts a first-touch email + SMS that reference the specifics of the inquiry; delivered via SendGrid/Twilio
-5. **Sends one follow-up a week later** — exactly one automatic follow-up email goes to the lead one week after the welcome email (change the timing with `FOLLOWUP_DAYS`)
+4. **Sends an instant confirmation email and text** — Claude drafts a first-touch email + SMS that reference the specifics of the inquiry; delivered via Gmail/SendGrid/Twilio
+5. **Sends one follow-up a week later** — exactly one automatic follow-up email goes to the customer one week after the confirmation (change the timing with `FOLLOWUP_DAYS`)
 
 ```
-Website form ──▶ POST /api/leads ──▶ Claude (summary + score + drafts)
-                                        │
-                        ┌───────────────┼────────────────┐
-                        ▼               ▼                ▼
-                   CRM contact    email + SMS to    follow-up reminder
-                 (HubSpot/local)     the lead        (emailed to agent)
+Website sign-up form ──▶ POST /api/leads ──▶ Claude (summary + score + drafts)
+                                               │
+                        ┌──────────────────────┼────────────────────┐
+                        ▼                       ▼                    ▼
+                   CRM contact        instant email + SMS      7-day follow-up
+                 (HubSpot/local)         to the customer      email to customer
+                        │
+                        ▼
+              Team dashboard (/dashboard.html) — live pipeline & follow-up status
 ```
+
+> This is the same generic engine rebranded for an HVAC company via environment
+> variables (`BUSINESS_NAME`, `BUSINESS_TYPE`, `AGENT_NAME`, `BUSINESS_PHONE`).
+> Change those to run it for any service business.
 
 ## Quick start
 
@@ -40,8 +54,9 @@ curl -X POST http://localhost:3000/api/leads \
     "name": "Sarah Mitchell",
     "email": "sarah@example.com",
     "phone": "+15125550142",
-    "message": "Looking for a 3BR home in Austin under $650k, moving in August.",
-    "source": "website-contact-form"
+    "message": "Central AC stopped cooling, unit is ~12 years old and rattling.",
+    "source": "website-signup-form",
+    "extras": { "service": "AC repair", "urgency": "Emergency — no cooling" }
   }'
 ```
 
@@ -72,8 +87,9 @@ All configuration is via environment variables (see `.env.example`):
 | `GET` | `/api/health` | Shows which integrations are active vs dry-run |
 | `GET` | `/api/leads.csv` | Download all leads as a spreadsheet (Excel / Google Sheets) |
 | `GET`/`POST` | `/api/followup-template` | Read / save the editable follow-up email |
-| `GET` | `/` | Demo lead-capture form |
-| `GET` | `/editor.html` | Editor page where the agent writes their follow-up email |
+| `GET` | `/` | The HVAC website with the sign-up form |
+| `GET` | `/dashboard.html` | Team dashboard — live leads + follow-up status |
+| `GET` | `/editor.html` | Editor page where the team writes their follow-up email |
 
 ## Leads in a spreadsheet
 
@@ -137,6 +153,25 @@ src/
   notify.ts     SendGrid email + Twilio SMS adapters (step 4)
   scheduler.ts  Persistent follow-up reminders (step 5)
   workflow.ts   Orchestrates steps 2–5
-public/         Demo lead-capture form
-scripts/demo.ts Posts a sample lead to a running server
+public/
+  index.html      The HVAC marketing website + sign-up form
+  dashboard.html  Internal lead & follow-up dashboard (separate page)
+  editor.html     Follow-up email template editor
+scripts/demo.ts   Posts a sample lead to a running server
 ```
+
+## Deploying as a real website
+
+The site needs the Node backend running (to send emails and the 7-day
+follow-up), so it deploys as a small web service, not a static host:
+
+- **Render (recommended, free):** the included `render.yaml` deploys it in demo
+  mode with no secrets. In Render: **New + → Blueprint → pick this repo**. To send
+  real emails and use real AI later, set `MOCK_AI=false` plus `GMAIL_USER` /
+  `GMAIL_APP_PASSWORD` (and `ANTHROPIC_API_KEY`) in the Environment tab.
+- **Any Node host** (Railway, Fly, a VPS): `npm install && npm start`.
+
+> **Note on GitHub Pages:** Pages only serves static files, so it can't run this
+> backend (the form POST, the emails, and the follow-up scheduler would not work).
+> Host the whole app on Render/Railway instead, or split it (static pages on Pages
+> pointing their form at the backend's `/api/leads` URL on Render).

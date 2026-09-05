@@ -1,7 +1,7 @@
 {
   "name": "lead-capture-followup",
   "version": "1.0.0",
-  "description": "AI-powered lead capture & follow-up workflow for real estate agents, contractors, and homebuilders",
+  "description": "HVAC company website with AI-powered lead capture, instant confirmation email, and automatic 7-day follow-up",
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",

@@ -4,10 +4,12 @@ export const config = {
   port: Number(process.env.PORT ?? 3000),
 
   // Business identity — used to personalize AI-drafted messages
-  businessName: process.env.BUSINESS_NAME ?? "Acme Realty",
-  businessType: process.env.BUSINESS_TYPE ?? "real estate agency",
-  agentName: process.env.AGENT_NAME ?? "your agent",
+  businessName: process.env.BUSINESS_NAME ?? "Northline Heating & Air",
+  businessType: process.env.BUSINESS_TYPE ?? "HVAC (heating & air conditioning) company",
+  agentName: process.env.AGENT_NAME ?? "the Northline team",
   agentEmail: process.env.AGENT_EMAIL ?? "",
+  // Phone shown on the website and in messages.
+  businessPhone: process.env.BUSINESS_PHONE ?? "(555) 212-9080",
 
   // AI — the Anthropic SDK reads ANTHROPIC_API_KEY (or an `ant auth login`
   // profile) from the environment on its own. MOCK_AI=true skips the API

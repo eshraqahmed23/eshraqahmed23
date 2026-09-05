@@ -29,6 +29,7 @@ export interface CrmContact {
   phone?: string;
   source?: string;
   lead_quality: string;
+  service_requested?: string;
   summary: string;
   created_at: string;
   crm: "hubspot" | "local";

@@ -21,15 +21,15 @@ export const PLACEHOLDERS = [
 ];
 
 export const DEFAULT_TEMPLATE: FollowUpTemplate = {
-  subject: "Following up on your inquiry with {{business}}",
+  subject: "Still need help with your {{service}}? — {{business}}",
   body: [
     "Hi {{first_name}},",
     "",
-    "I wanted to follow up on your recent inquiry with {{business}}. I'd still love to help.",
+    "A week ago you reached out to {{business}} about your {{service}}, and I wanted to check back in — we'd still love to help.",
     "",
-    "Are you available for a quick call this week? Just reply to this email and let me know what works for you.",
+    "If it's still on your list, just reply to this email or give us a call and we'll get you scheduled at a time that works for you. No pressure either way.",
     "",
-    "Best,",
+    "Warm regards,",
     "{{agent}}",
     "{{business}}",
   ].join("\n"),

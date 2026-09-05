@@ -7,7 +7,7 @@
 # false), GMAIL_USER, GMAIL_APP_PASSWORD.
 services:
   - type: web
-    name: lead-capture-followup
+    name: northline-hvac
     runtime: node
     plan: free
     buildCommand: npm install
@@ -16,8 +16,10 @@ services:
       - key: MOCK_AI
         value: "true"
       - key: BUSINESS_NAME
-        value: Hilltop Realty
+        value: Northline Heating & Air
       - key: BUSINESS_TYPE
-        value: real estate agency
+        value: HVAC (heating & air conditioning) company
       - key: AGENT_NAME
-        value: Alex Rivera
+        value: the Northline team
+      - key: BUSINESS_PHONE
+        value: (555) 212-9080

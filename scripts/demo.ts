@@ -9,12 +9,16 @@ const sampleLead = {
   email: "sarah.mitchell@example.com",
   phone: "+15125550142",
   message:
-    "Hi! My husband and I are relocating to Austin in August for work. " +
-    "We're pre-approved for $650k and looking for a 3-4 bedroom home with a " +
-    "yard, ideally in the Round Rock or Cedar Park school districts. " +
-    "We'd love to schedule some viewings in the next couple of weeks.",
-  source: "website-contact-form",
-  extras: { budget: "$650,000", timeline: "next 60 days" },
+    "Hi! Our central AC stopped cooling last night and the house is getting " +
+    "hot fast — we have a toddler at home. The unit is about 12 years old and " +
+    "was making a rattling noise before it quit. We'd love to get someone out " +
+    "as soon as possible for a repair or a quote on a replacement.",
+  source: "website-signup-form",
+  extras: {
+    service: "AC repair",
+    urgency: "Emergency — no cooling",
+    address: "Cedar Park, TX 78613",
+  },
 };
 
 const res = await fetch(`${BASE}/api/leads`, {

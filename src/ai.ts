@@ -72,11 +72,16 @@ function leadToPrompt(lead: LeadSubmission): string {
 
 /** Deterministic fallback used when MOCK_AI=true (local dev without an API key). */
 function mockAnalysis(lead: LeadSubmission): LeadAnalysis {
+  const service = lead.extras?.service ?? "general inquiry";
+  const urgency = lead.extras?.urgency ?? "";
+  const isUrgent = /emergency|urgent|no heat|no ac|no cooling/i.test(
+    `${urgency} ${lead.message}`,
+  );
   return {
-    summary: `${lead.name} submitted an inquiry via ${lead.source ?? "the website"}: ${lead.message.slice(0, 140)}`,
-    lead_quality: "warm",
-    service_requested: "general inquiry",
-    key_details: [lead.message.slice(0, 100)],
+    summary: `${lead.name} requested ${service}${urgency ? ` (${urgency})` : ""} via ${lead.source ?? "the website"}: ${lead.message.slice(0, 140)}`,
+    lead_quality: isUrgent ? "hot" : "warm",
+    service_requested: service,
+    key_details: [urgency, lead.message.slice(0, 100)].filter(Boolean),
     email: {
       subject: `Thanks for reaching out to ${config.businessName}, ${lead.name.split(" ")[0]}!`,
       body: `Hi ${lead.name.split(" ")[0]},\n\nThanks for contacting ${config.businessName}. I saw your note and would love to help. Do you have time for a quick call this week?\n\nBest,\n${config.agentName}`,
