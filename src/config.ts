@@ -11,10 +11,14 @@ export const config = {
   // Phone shown on the website and in messages.
   businessPhone: process.env.BUSINESS_PHONE ?? "(555) 212-9080",
 
-  // AI — the Anthropic SDK reads ANTHROPIC_API_KEY (or an `ant auth login`
-  // profile) from the environment on its own. MOCK_AI=true skips the API
-  // for local development without credentials.
-  mockAi: process.env.MOCK_AI === "true",
+  // AI — the Anthropic SDK reads ANTHROPIC_API_KEY from the environment on its
+  // own. MOCK_AI=true forces the deterministic offline analysis. To make a
+  // fresh deploy work with zero secrets, we also fall back to mock mode
+  // automatically when no API key is present (unless MOCK_AI=false forces the
+  // real API). Set ANTHROPIC_API_KEY to switch on real Claude analysis.
+  mockAi:
+    process.env.MOCK_AI === "true" ||
+    (!process.env.ANTHROPIC_API_KEY && process.env.MOCK_AI !== "false"),
   model: process.env.CLAUDE_MODEL ?? "claude-opus-4-8",
 
   // CRM — set HUBSPOT_ACCESS_TOKEN to use HubSpot; otherwise a local JSON

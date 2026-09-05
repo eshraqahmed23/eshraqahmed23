@@ -163,15 +163,28 @@ scripts/demo.ts   Posts a sample lead to a running server
 ## Deploying as a real website
 
 The site needs the Node backend running (to send emails and the 7-day
-follow-up), so it deploys as a small web service, not a static host:
+follow-up), so it deploys as a small web service, not a static host.
 
-- **Render (recommended, free):** the included `render.yaml` deploys it in demo
-  mode with no secrets. In Render: **New + → Blueprint → pick this repo**. To send
-  real emails and use real AI later, set `MOCK_AI=false` plus `GMAIL_USER` /
-  `GMAIL_APP_PASSWORD` (and `ANTHROPIC_API_KEY`) in the Environment tab.
-- **Any Node host** (Railway, Fly, a VPS): `npm install && npm start`.
+**Railway (recommended):**
+
+1. Go to **railway.app** and sign in with GitHub.
+2. **New Project → Deploy from GitHub repo → `eshraqahmed23/eshraqahmed23`**.
+3. In the service **Settings**, set the deploy **Branch** to
+   `claude/business-ideas-claude-code-eupmsi`.
+4. Under **Settings → Networking**, click **Generate Domain** to get a public URL.
+5. It deploys with no secrets (auto demo mode — emails are logged, not sent).
+
+To switch on **real emails + AI**, add these under the service **Variables** tab
+and redeploy: `ANTHROPIC_API_KEY`, `GMAIL_USER`, `GMAIL_APP_PASSWORD`
+(a 16-char Google App Password). Setting `ANTHROPIC_API_KEY` automatically turns
+off demo mode. `PORT` is provided by Railway automatically — don't set it.
+
+`railway.json` pins the start command; the app needs no build step (it runs
+TypeScript directly via `tsx`).
+
+Other hosts work too — **Render** (via the included `render.yaml`), Fly, or any
+Node host (`npm install && npm start`).
 
 > **Note on GitHub Pages:** Pages only serves static files, so it can't run this
-> backend (the form POST, the emails, and the follow-up scheduler would not work).
-> Host the whole app on Render/Railway instead, or split it (static pages on Pages
-> pointing their form at the backend's `/api/leads` URL on Render).
+> backend. `docs/index.html` is a separate, browser-only *demo* of the site that
+> Pages can host, but the real emailing app must run on Railway/Render.
