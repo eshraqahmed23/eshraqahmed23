@@ -43,7 +43,9 @@ export interface FollowUpReminder {
   service_requested: string;
   due_at: string; // ISO timestamp
   reason: string;
-  status: "pending" | "sent";
+  status: "pending" | "sent" | "failed";
+  /** How many times we've tried (and failed) to send this follow-up. */
+  attempts?: number;
 }
 
 /** Full result of running the workflow for one lead. */
