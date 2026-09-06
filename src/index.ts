@@ -154,7 +154,9 @@ app.get("/api/health", (_req, res) =>
     ok: true,
     mockAi: config.mockAi,
     crm: config.hubspotToken ? "hubspot" : "local",
-    email: config.resendApiKey
+    email: config.brevoApiKey
+      ? "brevo"
+      : config.resendApiKey
       ? "resend"
       : config.gmailUser
         ? "gmail"

@@ -41,6 +41,13 @@ export async function checkEmail(): Promise<{
   provider: string;
   detail: string;
 }> {
+  if (config.brevoApiKey && config.brevoFrom) {
+    return {
+      ok: true,
+      provider: "brevo",
+      detail: `Brevo configured — sending from ${config.brevoFrom}. Make sure that sender is verified in your Brevo account.`,
+    };
+  }
   if (config.resendApiKey) {
     return {
       ok: true,
@@ -79,7 +86,31 @@ export async function sendEmail(
   subject: string,
   body: string,
 ): Promise<{ sent: boolean; detail: string }> {
-  // Preferred: Resend over HTTPS — works on cloud hosts that block SMTP.
+  // Preferred: Brevo over HTTPS — free forever, sends to any recipient, works
+  // on cloud hosts that block SMTP.
+  if (config.brevoApiKey && config.brevoFrom) {
+    const res = await fetch("https://api.brevo.com/v3/smtp/email", {
+      method: "POST",
+      headers: {
+        "api-key": config.brevoApiKey,
+        "Content-Type": "application/json",
+        accept: "application/json",
+      },
+      body: JSON.stringify({
+        sender: { name: config.businessName, email: config.brevoFrom },
+        to: [{ email: to }],
+        subject,
+        textContent: body,
+      }),
+    });
+    if (!res.ok) {
+      throw new Error(`Brevo send failed: ${res.status} ${await res.text()}`);
+    }
+    recordOutbox({ channel: "email", to, subject, body, sent: true });
+    return { sent: true, detail: "sent via Brevo" };
+  }
+
+  // Resend over HTTPS — works on cloud hosts that block SMTP.
   if (config.resendApiKey) {
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",

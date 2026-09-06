@@ -25,6 +25,12 @@ export const config = {
   // CRM at data/crm.json is used.
   hubspotToken: process.env.HUBSPOT_ACCESS_TOKEN ?? "",
 
+  // Email via Brevo (free forever: 300 emails/day, sends to any recipient, no
+  // domain required — just verify a sender email). HTTPS API, works on Railway.
+  // Set BREVO_API_KEY (xkeysib-...) and BREVO_FROM (your verified sender email).
+  brevoApiKey: process.env.BREVO_API_KEY ?? "",
+  brevoFrom: process.env.BREVO_FROM ?? "",
+
   // Email via Resend (recommended for cloud hosts like Railway/Render, which
   // often block outbound SMTP). Resend sends over HTTPS, so it always works.
   // Set RESEND_API_KEY; RESEND_FROM defaults to Resend's shared test sender
