@@ -43,15 +43,33 @@ export async function runLeadWorkflow(
     };
   }
 
-  // 4. Personalized outreach — email always; SMS only when we have a phone number
-  const email = await sendEmail(
-    lead.email,
-    analysis.email.subject,
-    analysis.email.body,
-  );
-  const sms = lead.phone
-    ? await sendSms(lead.phone, analysis.sms)
-    : { sent: false, detail: "skipped (no phone number provided)" };
+  // 4. Personalized outreach — email always; SMS only when we have a phone
+  // number. A failure here (e.g. a bad email/SMS credential) must NOT lose the
+  // lead or show the customer an error: the lead is already captured, so we
+  // catch, log the real reason, and carry on. The reason is returned in
+  // `outreach` and printed to the server logs for debugging.
+  let email: { sent: boolean; detail: string };
+  try {
+    email = await sendEmail(lead.email, analysis.email.subject, analysis.email.body);
+  } catch (err) {
+    const detail = err instanceof Error ? err.message : String(err);
+    console.error("Confirmation email failed (lead still captured):", detail);
+    email = { sent: false, detail: `email failed: ${detail}` };
+  }
+
+  let sms: { sent: boolean; detail: string } = {
+    sent: false,
+    detail: "skipped (no phone number provided)",
+  };
+  if (lead.phone) {
+    try {
+      sms = await sendSms(lead.phone, analysis.sms);
+    } catch (err) {
+      const detail = err instanceof Error ? err.message : String(err);
+      console.error("SMS failed (lead still captured):", detail);
+      sms = { sent: false, detail: `sms failed: ${detail}` };
+    }
+  }
 
   // Record that this lead has now been contacted (drives the de-dupe above).
   markContacted(lead.email);
