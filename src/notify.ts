@@ -31,6 +31,39 @@ function recordOutbox(entry: Omit<OutboxEntry, "id" | "at">): void {
 }
 
 /**
+ * Diagnostic: verify the configured email provider can actually authenticate,
+ * WITHOUT sending anything. Powers GET /api/email-check so the exact reason a
+ * send would fail (bad app password, Google blocking the login, etc.) is
+ * visible in the browser instead of buried in server logs.
+ */
+export async function checkEmail(): Promise<{
+  ok: boolean;
+  provider: string;
+  detail: string;
+}> {
+  if (config.gmailUser && config.gmailAppPassword) {
+    try {
+      await getGmailTransport().verify();
+      return { ok: true, provider: "gmail", detail: `Gmail login OK for ${config.gmailUser}` };
+    } catch (err) {
+      return {
+        ok: false,
+        provider: "gmail",
+        detail: err instanceof Error ? err.message : String(err),
+      };
+    }
+  }
+  if (config.sendgridApiKey && config.fromEmail) {
+    return { ok: true, provider: "sendgrid", detail: "SendGrid API key configured" };
+  }
+  return {
+    ok: false,
+    provider: "none",
+    detail: "No email provider configured — set GMAIL_USER + GMAIL_APP_PASSWORD (emails run in dry-run mode).",
+  };
+}
+
+/**
  * Step 4a: send the personalized email. Prefers Gmail when configured, then
  * SendGrid; otherwise logs the message to data/outbox.json (dry-run).
  */

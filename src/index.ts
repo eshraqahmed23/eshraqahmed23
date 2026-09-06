@@ -14,6 +14,7 @@ import {
   getFollowUpTemplate,
   saveFollowUpTemplate,
 } from "./settings.js";
+import { checkEmail } from "./notify.js";
 import { runLeadWorkflow } from "./workflow.js";
 
 const app = express();
@@ -142,6 +143,12 @@ app.post("/api/reminders/send-now", async (_req, res) => {
     });
   }
 });
+// Diagnostic: open /api/email-check in a browser to see whether the email
+// provider can authenticate, and the exact reason if it can't.
+app.get("/api/email-check", async (_req, res) => {
+  res.json(await checkEmail());
+});
+
 app.get("/api/health", (_req, res) =>
   res.json({
     ok: true,
