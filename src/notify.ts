@@ -41,6 +41,13 @@ export async function checkEmail(): Promise<{
   provider: string;
   detail: string;
 }> {
+  if (config.resendApiKey) {
+    return {
+      ok: true,
+      provider: "resend",
+      detail: `Resend configured — sending from ${config.resendFrom}. (Without a verified domain, Resend only delivers to your own Resend account email.)`,
+    };
+  }
   if (config.gmailUser && config.gmailAppPassword) {
     try {
       await getGmailTransport().verify();
@@ -72,7 +79,24 @@ export async function sendEmail(
   subject: string,
   body: string,
 ): Promise<{ sent: boolean; detail: string }> {
-  // Preferred: send through the user's own Gmail account.
+  // Preferred: Resend over HTTPS — works on cloud hosts that block SMTP.
+  if (config.resendApiKey) {
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${config.resendApiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ from: config.resendFrom, to, subject, text: body }),
+    });
+    if (!res.ok) {
+      throw new Error(`Resend send failed: ${res.status} ${await res.text()}`);
+    }
+    recordOutbox({ channel: "email", to, subject, body, sent: true });
+    return { sent: true, detail: "sent via Resend" };
+  }
+
+  // Send through the user's own Gmail account (SMTP — may be blocked on cloud hosts).
   if (config.gmailUser && config.gmailAppPassword) {
     await getGmailTransport().sendMail({
       from: `${config.businessName} <${config.gmailUser}>`,

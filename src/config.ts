@@ -25,8 +25,19 @@ export const config = {
   // CRM at data/crm.json is used.
   hubspotToken: process.env.HUBSPOT_ACCESS_TOKEN ?? "",
 
+  // Email via Resend (recommended for cloud hosts like Railway/Render, which
+  // often block outbound SMTP). Resend sends over HTTPS, so it always works.
+  // Set RESEND_API_KEY; RESEND_FROM defaults to Resend's shared test sender
+  // (which can only deliver to your own Resend account email until you verify
+  // a domain — then set RESEND_FROM to e.g. "Northline <hello@yourdomain.com>").
+  resendApiKey: process.env.RESEND_API_KEY ?? "",
+  resendFrom:
+    process.env.RESEND_FROM ??
+    `${process.env.BUSINESS_NAME ?? "Northline Heating & Air"} <onboarding@resend.dev>`,
+
   // Email via Gmail — set GMAIL_USER (your address) and GMAIL_APP_PASSWORD
   // (a 16-char Google App Password) to send through your own Gmail account.
+  // NOTE: uses SMTP, which many cloud hosts block — prefer Resend when deployed.
   gmailUser: process.env.GMAIL_USER ?? "",
   gmailAppPassword: process.env.GMAIL_APP_PASSWORD ?? "",
 
