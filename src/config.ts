@@ -25,6 +25,13 @@ export const config = {
   // CRM at data/crm.json is used.
   hubspotToken: process.env.HUBSPOT_ACCESS_TOKEN ?? "",
 
+  // Email via Mailjet (free forever: 200/day, sends to any recipient, no
+  // domain — just verify a sender email). HTTPS API, works on Railway. Set
+  // MAILJET_API_KEY, MAILJET_SECRET_KEY, and MAILJET_FROM (verified sender).
+  mailjetApiKey: process.env.MAILJET_API_KEY ?? "",
+  mailjetSecretKey: process.env.MAILJET_SECRET_KEY ?? "",
+  mailjetFrom: process.env.MAILJET_FROM ?? "",
+
   // Email via Brevo (free forever: 300 emails/day, sends to any recipient, no
   // domain required — just verify a sender email). HTTPS API, works on Railway.
   // Set BREVO_API_KEY (xkeysib-...) and BREVO_FROM (your verified sender email).

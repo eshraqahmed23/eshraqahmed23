@@ -41,6 +41,13 @@ export async function checkEmail(): Promise<{
   provider: string;
   detail: string;
 }> {
+  if (config.mailjetApiKey && config.mailjetSecretKey && config.mailjetFrom) {
+    return {
+      ok: true,
+      provider: "mailjet",
+      detail: `Mailjet configured — sending from ${config.mailjetFrom}. Make sure that sender is verified in your Mailjet account.`,
+    };
+  }
   if (config.brevoApiKey && config.brevoFrom) {
     return {
       ok: true,
@@ -86,8 +93,37 @@ export async function sendEmail(
   subject: string,
   body: string,
 ): Promise<{ sent: boolean; detail: string }> {
-  // Preferred: Brevo over HTTPS — free forever, sends to any recipient, works
-  // on cloud hosts that block SMTP.
+  // Mailjet over HTTPS — free forever, sends to any recipient.
+  if (config.mailjetApiKey && config.mailjetSecretKey && config.mailjetFrom) {
+    const auth = Buffer.from(
+      `${config.mailjetApiKey}:${config.mailjetSecretKey}`,
+    ).toString("base64");
+    const res = await fetch("https://api.mailjet.com/v3.1/send", {
+      method: "POST",
+      headers: {
+        Authorization: `Basic ${auth}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        Messages: [
+          {
+            From: { Email: config.mailjetFrom, Name: config.businessName },
+            To: [{ Email: to }],
+            Subject: subject,
+            TextPart: body,
+          },
+        ],
+      }),
+    });
+    if (!res.ok) {
+      throw new Error(`Mailjet send failed: ${res.status} ${await res.text()}`);
+    }
+    recordOutbox({ channel: "email", to, subject, body, sent: true });
+    return { sent: true, detail: "sent via Mailjet" };
+  }
+
+  // Brevo over HTTPS — free forever, sends to any recipient, works on cloud
+  // hosts that block SMTP.
   if (config.brevoApiKey && config.brevoFrom) {
     const res = await fetch("https://api.brevo.com/v3/smtp/email", {
       method: "POST",
